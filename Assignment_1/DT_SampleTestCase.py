@@ -1,3 +1,12 @@
+'''
+MI Assignment 1
+
+Authors: 
+- Adithi Satish
+- Ananya Veeraraghavan
+- Shriya Shankar
+'''
+
 from Assignment1 import *   
 
 def test_case():
