@@ -21,7 +21,7 @@ def get_entropy_of_dataset(df):
 		res = -(p/size)*np.log2([p/size])[0]
 		entropy+=res
 	
-	print(entropy)
+	#print(entropy)
 	return entropy
 
 
