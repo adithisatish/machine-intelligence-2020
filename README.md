@@ -1,7 +1,9 @@
-# Decision Tree Classifiers - ID3 Algorithm
-### Machine Intelligence - Assignment 1
+# Machine Intelligence Assignments
 
-Authors:
+Assignment 1: ID3 Algorithm for Decision Tree Classifiers
+
+
+### Authors:
 - Adithi Satish
 - Ananya Veeraraghavan
 - Shriya Shankar
