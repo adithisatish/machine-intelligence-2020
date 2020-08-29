@@ -9,6 +9,7 @@ Functions Implemented:
 
 ### Run
 A sample test case has been provided in order to test the functions.
-    ```python3 DT_SampleTest_Case.py```
+    
+```python3 DT_SampleTest_Case.py```
 
 Implemented in Python.
