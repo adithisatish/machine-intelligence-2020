@@ -23,15 +23,15 @@ def get_entropy_of_dataset(df):
 
 	''' The entropy of the dataset can be defined as
 	
-	E(S) = - Sum((pi/n)*log(pi/n)) for all i from 1 to C, where
-	n is the total number of instances in the dataset
-	C is the number of categories/class labels of the target variable
-	pi is the number of instances where target variable = class i 
+	E(S) = - Summation((pi/n)*log(pi/n)) for all i from 1 to C, where
+	n is the total number of instances in the dataset,
+	C is the number of categories/class labels of the target variable,
+	pi is the number of instances where target variable = class i.
 	'''
 
 	entropy = 0
 	size = len(df) #the total number of instances in the dataset
-	if size==0:
+	if size == 0:
 		return entropy
 	
 	target = list(df.columns)[-1] #the target variable i.e Nth column in the dataset
@@ -40,7 +40,7 @@ def get_entropy_of_dataset(df):
 	for i in values:
 		p = len(df[df[target]==i]) #the number of instances in the dataset where target = i
 		res = -(p/size)*np.log2([p/size])[0]
-		entropy+=res
+		entropy += res
 	
 	#print(entropy)
 	return entropy
