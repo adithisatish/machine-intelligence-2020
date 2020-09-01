@@ -35,10 +35,10 @@ def get_entropy_of_dataset(df):
 		return entropy
 	
 	target = list(df.columns)[-1] #the target variable i.e Nth column in the dataset
-	values = list(df[target].unique()) #all possible values the target variable can take
-
-	for i in values:
-		p = len(df[df[target]==i]) #the number of instances in the dataset where target = i
+	label_count = dict(df[target].value_counts()) #keys in the dictionary are all the unique class labels with the values being their corresponding counts
+	
+	for i in label_count:
+		p = label_count[i] #the number of instances in the dataset where target = i
 		res = -(p/size)*np.log2([p/size])[0]
 		entropy += res
 	
@@ -58,6 +58,10 @@ def get_entropy_of_attribute(df,attribute):
 
 	entropy_of_attribute = 0
 	size = len(df) #the total number of instances in the dataset
+
+	if size==0:
+		return entropy_of_attribute
+
 	values = list(df[attribute].unique()) #all possible values the given attribute can take
 
 	for i in values:
