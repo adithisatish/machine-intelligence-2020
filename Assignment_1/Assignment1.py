@@ -2,9 +2,9 @@
 MI Assignment 1
 
 Authors: 
-- Adithi Satish
-- Ananya Veeraraghavan
-- Shriya Shankar
+- Adithi Satish - PES1201800150
+- Ananya Veeraraghavan - PES1201800204
+- Shriya Shankar - PES1201800027
 '''
 
 '''
