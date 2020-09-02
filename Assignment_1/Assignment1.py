@@ -107,6 +107,9 @@ def get_selected_attribute(df):
 
 	example : ({'A':0.123,'B':0.768,'C':1.23} , 'C')
 	'''
+	if(len(df.columns) < 1): #To take care of the case with no attributes
+		return (information_gains,selected_column)
+
 	if(len(df.columns)==1): #To take care of the case with only one attribute in the dataset
 		col = list(df.columns)[0]
 		information_gains[col] = get_information_gain(df,col)
