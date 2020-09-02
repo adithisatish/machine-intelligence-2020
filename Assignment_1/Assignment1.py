@@ -119,7 +119,7 @@ def get_selected_attribute(df):
 		
 		#print(information_gains)
 		max_info_gain = max(information_gains.values())
-		selected_column = [i for i in information_gains.keys() if information_gains[i]==max_info_gain][0]
+		selected_column = [i for i in information_gains if information_gains[i]==max_info_gain][0]
 
 	return (information_gains,selected_column)
 
