@@ -99,6 +99,7 @@ def get_selected_attribute(df):
    
 	information_gains={}
 	selected_column=''
+	max = 0
 	
 	'''
 	Return a tuple with the first element as a dictionary which has IG of all columns 
@@ -116,10 +117,12 @@ def get_selected_attribute(df):
 
 		for i in columns:
 			information_gains[i] = get_information_gain(df,i)
-		
+			if max < information_gains[i]:
+				max = information_gains[i]
+				selected_column = i
 		#print(information_gains)
-		max_info_gain = max(information_gains.values())
-		selected_column = [i for i in information_gains if information_gains[i]==max_info_gain][0]
+		#max_info_gain = max(information_gains.values())
+		#selected_column = [i for i in information_gains if information_gains[i]==max_info_gain][0]
 
 	return (information_gains,selected_column)
 
