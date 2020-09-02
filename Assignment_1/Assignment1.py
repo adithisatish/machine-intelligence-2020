@@ -106,14 +106,20 @@ def get_selected_attribute(df):
 
 	example : ({'A':0.123,'B':0.768,'C':1.23} , 'C')
 	'''
+	if(len(df.columns)==1): #To take care of the case with only one attribute in the dataset
+		col = list(df.columns)[0]
+		information_gains[col] = get_information_gain(df,col)
+		selected_column = col
 
-	columns = list(df.columns)[:-1] #All columns except the target variable
+	else:
+		columns = list(df.columns)[:-1] #All columns except the target variable
 
-	for i in columns:
-		information_gains[i] = get_information_gain(df,i)
-	
-	max_info_gain = max(information_gains.values())
-	selected_column = [i for i in information_gains.keys() if information_gains[i]==max_info_gain][0]
+		for i in columns:
+			information_gains[i] = get_information_gain(df,i)
+		
+		#print(information_gains)
+		max_info_gain = max(information_gains.values())
+		selected_column = [i for i in information_gains.keys() if information_gains[i]==max_info_gain][0]
 
 	return (information_gains,selected_column)
 
