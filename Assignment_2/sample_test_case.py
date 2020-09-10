@@ -27,8 +27,7 @@ def test_case():
             print("SAMPLE TEST CASE 1 FOR THE  DFS_TRAVERSAL PASSED")
         else:
             print("SAMPLE TEST CASE 1 FOR THE  DFS_TRAVERSAL FAILED")
-    except Exception as e:
-        print("Error : ", e)
+    except :
         print("SAMPLE TEST CASE 1 FOR THE DFS_TRAVERSAL FAILED")
     try:
         if (tri_Traversal(cost,heuristic, 1, [6, 7, 10]))[1] == [1, 5, 4, 7]:
