@@ -25,51 +25,63 @@ def getMinimumPath(priorityQueue):
     minPath = priorityQueue[0]
 
     for i in priorityQueue[1:]:
-        if minPath[1] > i[1]:
+        if minPath[1] > i[1]: #The first comparison done with respect to costs
             minPath = i
         elif minPath[1] == i[1]:
-            if minPath[0] > i[0]:
+            if minPath[0] > i[0]: #The second comparison done to maintain lexicographical order
                 minPath = i
     
     return minPath
 
 def uniformCostSearch(cost, start_point, goals):
-    visited = [0]*len(cost[0])
-    priorityQueue = []
+    visited = [0]*len(cost[0]) #The Explored Set: keeps track of all the nodes that have already been visited
+    priorityQueue = [] #In UCS, the Frontier is a Priority Queue that is dependent on the minimum path cost
 
-    visited[start_point] = 1
-    priorityQueue.append((start_point,0))
+    pathTrack = {1:0} #To keep track of the child and corresponding parent nodes
+    res = [] # The resulting list of nodes which represents the minimum cost path
+
+    visited[start_point] = 1 
+    priorityQueue.append((start_point,0,0)) 
     
     i = start_point
-    cur_path = (start_point,0)
+    cur_path = (start_point,0,i) #This is updated everytime with the current node chosen, the cost upto that node, and said node's parent
     
     while(len(priorityQueue) != 0):
-        if cur_path in priorityQueue:
+        if cur_path in priorityQueue: #This is done in order to remove the initial node (i.e start state) from the frontier
             priorityQueue.remove(cur_path)
 
         for j in range(1, len(cost[i])):
-            if cost[i][j] <= 0:
+            if cost[i][j] <= 0: #No directed edge between the nodes i and j
                 continue
-            if visited[j] == 1:
+            if visited[j] == 1: #The node has already been visited so it won't be appended to frontier again
                 continue
-            priorityQueue.append((j,cur_path[1]+cost[i][j]))
+            priorityQueue.append((j,cur_path[1]+cost[i][j],i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
        
         while True:
-            cur_path = getMinimumPath(priorityQueue)
+            cur_path = getMinimumPath(priorityQueue) #Returns the minimum path node of all nodes in frontier
 
             if visited[cur_path[0]] == 1:
-                priorityQueue.remove(cur_path)
+                priorityQueue.remove(cur_path) #Repeat until a minimum path node is found that is unvisited by removing all visited minimum path nodes
             else:
                 break
-            
-        visited[cur_path[0]] = 1
-        i = cur_path[0]
-        priorityQueue.remove(cur_path)
+        
+        pathTrack[cur_path[0]] = cur_path[2] #Update the child:parent pair in order to keep track of path taken
 
-        if cur_path[0] in goals:
-            return cur_path
+        visited[cur_path[0]] = 1 #Add current path node to explored set
+        i = cur_path[0]
+        priorityQueue.remove(cur_path) #Remove the current node from frontier
+
+        #print("Path Track:",pathTrack)
+
+        if cur_path[0] in goals: #A minimum path goal state has been achieved
+            child = cur_path[0]
+            while child !=0: #Travel backwards from goal to root in order to find the path taken 
+                res.append(child) #Res has the order of nodes from goal to start state
+                child = pathTrack[child]
+            break
     
-    return cur_path #Is this what should be returned by default?
+    res.reverse() #To get the correct traversal order i.e start state to goal 
+    return res
 
 
 def tri_Traversal(cost, heuristic, start_point, goals):
@@ -80,9 +92,12 @@ def tri_Traversal(cost, heuristic, start_point, goals):
     # t2 <= UCS_Traversal
     # t3 <= A_star_Traversal
     #print("En")
-    ufs = uniformCostSearch(cost,start_point,goals)
-    print("Goal and Minimum Cost:",ufs)
-    #l.append(t1)
-    #l.append(t2)
+
+    t1 = []
+    t2 = uniformCostSearch(cost,start_point,goals)
+    
+
+    l.append(t1)
+    l.append(t2)
     #l.append(t3)
     return l
