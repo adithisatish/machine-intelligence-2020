@@ -2,9 +2,9 @@
 ## Machine Intelligence - Assignment 2
 
 Functions Implemented:
-- ```dfs```
-- ```ucs```
-- ```astar```
+- ```dfs``` : Depth-First Search
+- ```ucs``` : Uniform Cost Search
+- ```astar``` : A* Search
 
 ### Run
 A sample test case has been provided in order to test the functions.
