@@ -3,7 +3,7 @@
 
 Functions Implemented:
 - ```dfs``` : Depth-First Search
-- ```ucs``` : Uniform Cost Search
+- ```uniformCostSearch``` : Uniform Cost Search
 - ```astar``` : A* Search
 
 ### Run
