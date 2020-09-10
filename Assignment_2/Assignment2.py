@@ -93,9 +93,9 @@ def tri_Traversal(cost, heuristic, start_point, goals):
     # t3 <= A_star_Traversal
     #print("En")
 
-    t1 = []
+    t1 = [] #for DFS
     t2 = uniformCostSearch(cost,start_point,goals)
-    
+    t3 = [] #for A*
 
     l.append(t1)
     l.append(t2)
