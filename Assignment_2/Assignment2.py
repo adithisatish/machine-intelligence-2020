@@ -75,7 +75,7 @@ def uniformCostSearch(cost, start_point, goals):
 
         if cur_path[0] in goals: #A minimum path goal state has been achieved
             child = cur_path[0]
-            while child !=0: #Travel backwards from goal to root in order to find the path taken 
+            while child !=0: #Traverse backwards from goal to start state in order to find the path taken 
                 res.append(child) #Res has the order of nodes from goal to start state
                 child = pathTrack[child]
             break
