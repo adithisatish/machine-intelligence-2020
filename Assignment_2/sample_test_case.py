@@ -34,7 +34,8 @@ def test_case():
             print("SAMPLE TEST CASE 2 FOR THE  UCS_TRAVERSAL PASSED")
         else:
             print("SAMPLE TEST CASE 2 FOR THE  UCS_TRAVERSAL FAILED")
-    except:
+    except :#Exception as e:
+        #print("Error :",e)
         print("SAMPLE TEST CASE 2 FOR THE UCS_TRAVERSAL FAILED")
 
     try:

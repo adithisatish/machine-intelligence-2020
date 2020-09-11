@@ -59,8 +59,14 @@ def uniformCostSearch(cost, start_point, goals):
     visited = [0]*len(cost[0]) #The Explored Set: keeps track of all the nodes that have already been visited
     priorityQueue = [] #In UCS, the Frontier is a Priority Queue that is dependent on the minimum path cost
 
-    pathTrack = {1:0} #To keep track of the child and corresponding parent nodes
+    pathTrack = {start_point:0} #To keep track of the child and corresponding parent nodes
     res = [] # The resulting list of nodes which represents the minimum cost path
+
+    if start_point in goals:
+        return [start_point]
+
+    if start_point not in range(1,len(visited)):
+        return res
 
     visited[start_point] = 1
     priorityQueue.append((start_point,0,0))
@@ -80,6 +86,7 @@ def uniformCostSearch(cost, start_point, goals):
             priorityQueue.append((j,cur_path[1]+cost[i][j],i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
 
         while True:
+            #print(cur_path)
             cur_path = getMinimumPath(priorityQueue) #Returns the minimum path node of all nodes in frontier
 
             if visited[cur_path[0]] == 1:
@@ -97,6 +104,7 @@ def uniformCostSearch(cost, start_point, goals):
 
         if cur_path[0] in goals: #A minimum path goal state has been achieved
             child = cur_path[0]
+            #print(cur_path[:2])
             while child !=0: #Traverse backwards from goal to start state in order to find the path taken
                 res.append(child) #Res has the order of nodes from goal to start state
                 child = pathTrack[child]
@@ -123,3 +131,20 @@ def tri_Traversal(cost, heuristic, start_point, goals):
     l.append(t2)
     #l.append(t3)
     return l
+
+
+#For checking:
+'''cost = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+            [0, 0, 5, 9, -1, 6, -1, -1, -1, -1, -1],
+            [0, -1, 0, 3, -1, -1, 9, -1, -1, -1, -1], 
+            [0, -1, 2, 0, 1, -1, -1, -1, -1, -1, -1],
+            [0, 6, -1, -1, 0, -1, -1, 5, 7, -1, -1],
+            [0, -1, -1, -1, 2, 0, -1, -1, -1, 2, -1],
+            [0, -1, -1, -1, -1, -1, 0, -1, -1, -1, -1],
+            [0, -1, -1, -1, -1, -1, -1, 0, -1, -1, -1],
+            [0, -1, -1, -1, -1, 2, -1, -1, 0, -1, 8],
+            [0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 7],
+            [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0]]
+heuristic = [0, 5, 7, 3, 4, 6, 0, 0, 6, 5, 0]
+
+tri_Traversal(cost,heuristic,1,[9,7,10])'''
