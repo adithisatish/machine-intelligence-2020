@@ -60,11 +60,11 @@ def depthFirstSearch(cost,start_point,goals):
                 stack.pop()
 
 
-def getMinimumPath(priorityQueue):
+def getMinimumPath(priorityQueue,heuristic):
     minPath = priorityQueue[0]
 
     for i in priorityQueue[1:]:
-        if minPath[1] > i[1]: #The first comparison done with respect to costs
+        if minPath[1] + heuristic[minPath[0]] > i[1] + heuristic[i[0]]: #The first comparison done with respect to costs
             minPath = i
         elif minPath[1] == i[1]:
             if minPath[0] > i[0]: #The second comparison done to maintain lexicographical order
@@ -72,7 +72,18 @@ def getMinimumPath(priorityQueue):
 
     return minPath
 
-def uniformCostSearch(cost, start_point, goals):
+def uniformCostSearch(cost, start_point, goals,heuristic,ucs_astar = 0): 
+
+    #The ucs_astar parameter here determines whether the algorithm is UCS or A*
+    #i.e whether to consider the heuristic or not.
+    #If ucs_astar = 0 => UCS algorithm, and all elements of the heuristic array are set to 0
+    #If ucs_astar = 1 => A* algorithm 
+
+    if ucs_astar == 0:
+        heuristic = [0]*len(cost[0])
+    
+    #print("Heuristic :",heuristic)
+
     visited = [0]*len(cost[0]) #The Explored Set: keeps track of all the nodes that have already been visited
     priorityQueue = [] #In UCS, the Frontier is a Priority Queue that is dependent on the minimum path cost
 
@@ -91,8 +102,9 @@ def uniformCostSearch(cost, start_point, goals):
     priorityQueue.append((start_point,0,0))
 
     i = start_point
+    #print(heuristic[start_point])
     cur_path = (start_point,0,i) #This is updated everytime with the current node chosen, the cost upto that node, and said node's parent
-
+    
     while(len(priorityQueue) != 0):
         if cur_path in priorityQueue: #This is done in order to remove the initial node (i.e start state) from the frontier
             priorityQueue.remove(cur_path)
@@ -102,11 +114,11 @@ def uniformCostSearch(cost, start_point, goals):
                 continue
             if visited[j] == 1: #The node has already been visited so it won't be appended to frontier again
                 continue
-            priorityQueue.append((j,cur_path[1]+cost[i][j],i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
+            priorityQueue.append((j,(cur_path[1]+cost[i][j]),i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
 
         while True:
             #print(cur_path)
-            cur_path = getMinimumPath(priorityQueue) #Returns the minimum path node of all nodes in frontier
+            cur_path = getMinimumPath(priorityQueue,heuristic) #Returns the minimum path node of all nodes in frontier
 
             if visited[cur_path[0]] == 1:
                 priorityQueue.remove(cur_path) #Repeat until a minimum path node is found that is unvisited by removing all visited minimum path nodes
@@ -133,6 +145,19 @@ def uniformCostSearch(cost, start_point, goals):
     return res
 
 
+def checkValidity(cost,heuristic):
+    return 1
+
+def aStarSearch(cost, heuristic, start_point, goals):
+
+    validHeuristic = checkValidity(heuristic,cost)
+
+    if validHeuristic == 0:
+        print("The heuristic is not valid")
+        return None
+
+    return uniformCostSearch(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
+
 def tri_Traversal(cost, heuristic, start_point, goals):
     l = []
 
@@ -143,10 +168,28 @@ def tri_Traversal(cost, heuristic, start_point, goals):
     #print("En")
 
     t1 = depthFirstSearch(cost,start_point,goals)
-    t2 = uniformCostSearch(cost,start_point,goals)
-    t3 = [] #for A*
+    t2 = uniformCostSearch(cost,start_point,goals,None,0)
+    t3 = aStarSearch(cost,heuristic,start_point,goals)
 
     l.append(t1)
     l.append(t2)
-    #l.append(t3)
+    l.append(t3)
     return l
+
+
+#For checking
+
+cost = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+            [0, 0, 5, 9, -1, 6, -1, -1, -1, -1, -1],
+            [0, -1, 0, 3, -1, -1, 9, -1, -1, -1, -1], 
+            [0, -1, 2, 0, 1, -1, -1, -1, -1, -1, -1],
+            [0, 6, -1, -1, 0, -1, -1, 5, 7, -1, -1],
+            [0, -1, -1, -1, 2, 0, -1, -1, -1, 2, -1],
+            [0, -1, -1, -1, -1, -1, 0, -1, -1, -1, -1],
+            [0, -1, -1, -1, -1, -1, -1, 0, -1, -1, -1],
+            [0, -1, -1, -1, -1, 2, -1, -1, 0, -1, 8],
+            [0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 7],
+            [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0]]
+heuristic = [0, 5, 7, 3, 4, 6, 0, 0, 6, 5, 0]
+
+#tri_Traversal(cost,heuristic,1,[6,7,10])
