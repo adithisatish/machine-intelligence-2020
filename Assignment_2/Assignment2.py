@@ -103,16 +103,16 @@ def uniformCostSearch(cost, start_point, goals,heuristic,ucs_astar = 0):
 
     i = start_point
     #print(heuristic[start_point])
-    cur_path = (start_point,0,i) #This is updated everytime with the current node chosen, the cost upto that node, and said node's parent
+    cur_path = (start_point,0,i) #Updated everytime with the current node chosen, the cost upto that node, and said node's parent
     
     while(len(priorityQueue) != 0):
-        if cur_path in priorityQueue: #This is done in order to remove the initial node (i.e start state) from the frontier
+        if cur_path in priorityQueue: #Remove the initial node (i.e start state) from the frontier
             priorityQueue.remove(cur_path)
 
         for j in range(1, len(cost[i])):
-            if cost[i][j] <= 0: #No directed edge between the nodes i and j
+            if cost[i][j] <= 0: 
                 continue
-            if visited[j] == 1: #The node has already been visited so it won't be appended to frontier again
+            if visited[j] == 1: 
                 continue
             priorityQueue.append((j,(cur_path[1]+cost[i][j]),i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
 
@@ -137,7 +137,7 @@ def uniformCostSearch(cost, start_point, goals,heuristic,ucs_astar = 0):
             child = cur_path[0]
             #print(cur_path[:2])
             while child !=0: #Traverse backwards from goal to start state in order to find the path taken
-                res.append(child) #Res has the order of nodes from goal to start state
+                res.append(child) 
                 child = pathTrack[child]
             break
 
