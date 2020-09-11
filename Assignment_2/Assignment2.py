@@ -20,9 +20,26 @@ Return : A list containing a list of all traversals [[],[],[]]
 NOTE : you are allowed to write other helper functions that you can call in the given fucntion
 '''
 
+def stateExceptions(n,start_point,goals): #Here n represents the number of vertices
+    if start_point < 1 or start_point > n:
+        return -1
+    if start_point in goals:
+        return 1
+
+    return 0
+
 def depthFirstSearch(cost,start_point,goals):
     visited=[0]*len(cost[0]) # To keep track of visited nodes.
     stack=[]
+
+    exception = stateExceptions(len(visited)-1,start_point,goals)
+
+    if exception == -1:
+        return []
+    
+    if exception == 1:
+        return [start_point]
+
     visited[start_point]=1
     stack.append(start_point)
     while stack:
@@ -62,11 +79,13 @@ def uniformCostSearch(cost, start_point, goals):
     pathTrack = {start_point:0} #To keep track of the child and corresponding parent nodes
     res = [] # The resulting list of nodes which represents the minimum cost path
 
-    if start_point in goals:
-        return [start_point]
+    exception = stateExceptions(len(visited)-1,start_point,goals)
 
-    if start_point not in range(1,len(visited)):
-        return res
+    if exception == -1:
+        return []
+    
+    if exception == 1:
+        return [start_point]
 
     visited[start_point] = 1
     priorityQueue.append((start_point,0,0))
@@ -131,20 +150,3 @@ def tri_Traversal(cost, heuristic, start_point, goals):
     l.append(t2)
     #l.append(t3)
     return l
-
-
-#For checking:
-'''cost = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-            [0, 0, 5, 9, -1, 6, -1, -1, -1, -1, -1],
-            [0, -1, 0, 3, -1, -1, 9, -1, -1, -1, -1], 
-            [0, -1, 2, 0, 1, -1, -1, -1, -1, -1, -1],
-            [0, 6, -1, -1, 0, -1, -1, 5, 7, -1, -1],
-            [0, -1, -1, -1, 2, 0, -1, -1, -1, 2, -1],
-            [0, -1, -1, -1, -1, -1, 0, -1, -1, -1, -1],
-            [0, -1, -1, -1, -1, -1, -1, 0, -1, -1, -1],
-            [0, -1, -1, -1, -1, 2, -1, -1, 0, -1, 8],
-            [0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 7],
-            [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0]]
-heuristic = [0, 5, 7, 3, 4, 6, 0, 0, 6, 5, 0]
-
-tri_Traversal(cost,heuristic,1,[9,7,10])'''
