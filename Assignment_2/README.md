@@ -2,7 +2,7 @@
 ## Machine Intelligence - Assignment 2
 
 Functions Implemented:
-- ```dfs``` : Depth-First Search
+- ```depthFirstSearch``` : Depth-First Search
 - ```uniformCostSearch``` : Uniform Cost Search
 - ```astar``` : A* Search
 
