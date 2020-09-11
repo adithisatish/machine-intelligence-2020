@@ -145,7 +145,12 @@ def uniformCostSearch(cost, start_point, goals,heuristic,ucs_astar = 0):
     return res
 
 
-def checkValidity(cost,heuristic):
+def checkValidity(cost,heuristic): #YET TO COMPLETE
+    nodes = len(cost[0])
+    
+    if len(heuristic)!=nodes:
+        return 0
+    
     return 1
 
 def aStarSearch(cost, heuristic, start_point, goals):
