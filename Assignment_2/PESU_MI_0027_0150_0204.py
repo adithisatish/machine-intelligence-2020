@@ -115,6 +115,9 @@ def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
                 res.append(child) 
                 child = pathTrack[child]
             break
+    
+    if len(priorityQueue)==0 and cur_path[0] not in goals: #To handle the case where all the goal states are unreachable
+        return []
 
     res.reverse() #To get the correct traversal order i.e start state to goal
     return res
