@@ -22,38 +22,6 @@ def checkValidity(heuristic,cost): #YET TO COMPLETE
     
     return 1
 
-def depthFirstSearch(cost,start_point,goals):
-    visited=[0]*len(cost[0]) # To keep track of visited nodes.
-    stack=[]
-
-    exception = stateExceptions(len(visited)-1,start_point,goals)
-
-    if exception == -1:
-        return []
-    
-    if exception == 1:
-        return [start_point]
-
-    visited[start_point]=1
-    stack.append(start_point)
-    while stack:
-        cur=stack[-1] #cur points to the last element in the stack
-      #  print(cur)
-        if cur in goals:
-       #     print(stack)
-            return stack
-        if visited[cur]!=1:
-            visited[cur]=1
-        flag=1
-        for i in range(1,len(cost[cur])):
-            if cost[cur][i]>=0 and visited[i]!=1:
-                stack.append(i)
-                flag=0
-                break
-        if flag:
-                stack.pop()
-
-
 def getMinimumPath(priorityQueue,heuristic):
     minPath = priorityQueue[0]
 
@@ -65,9 +33,22 @@ def getMinimumPath(priorityQueue,heuristic):
                 minPath = i
 
     return minPath
+    
+#Main functions:
 
-def uniformCostSearch(cost, start_point, goals,heuristic,ucs_astar = 0): 
+def A_star_Traversal(cost, heuristic, start_point, goals):
+    validHeuristic = checkValidity(heuristic,cost)
 
+    if validHeuristic == 0:
+        print("The heuristic is not valid")
+        return None
+
+    return UCS_Traversal(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
+
+    
+
+def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
+    
     #The ucs_astar parameter here determines whether the algorithm is UCS or A*
     #i.e whether to consider the heuristic or not.
     #If ucs_astar = 0 => UCS algorithm, and all elements of the heuristic array are set to 0
@@ -138,35 +119,37 @@ def uniformCostSearch(cost, start_point, goals,heuristic,ucs_astar = 0):
     res.reverse() #To get the correct traversal order i.e start state to goal
     return res
 
-
-def aStarSearch(cost, heuristic, start_point, goals):
-
-    validHeuristic = checkValidity(heuristic,cost)
-
-    if validHeuristic == 0:
-        print("The heuristic is not valid")
-        return None
-
-    return uniformCostSearch(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
-
-#Main functions:
-
-def A_star_Traversal(cost, heuristic, start_point, goals):
-    
-    l = aStarSearch(cost,heuristic,start_point,goals)
-
-    return l
-
-def UCS_Traversal(cost, heuristic, start_point, goals):
-    
-    l = uniformCostSearch(cost,start_point,goals,None,0)
-
-    return l
-
 def DFS_Traversal(cost,start_point, goals): #add your parameters 
+    visited=[0]*len(cost[0]) # To keep track of visited nodes.
+    stack=[]
+
+    exception = stateExceptions(len(visited)-1,start_point,goals)
+
+    if exception == -1:
+        return []
     
-    l = depthFirstSearch(cost,start_point,goals)
-    return l
+    if exception == 1:
+        return [start_point]
+
+    visited[start_point]=1
+    stack.append(start_point)
+    while stack:
+        cur=stack[-1] #cur points to the last element in the stack
+      #  print(cur)
+        if cur in goals:
+       #     print(stack)
+            return stack
+        if visited[cur]!=1:
+            visited[cur]=1
+        flag=1
+        for i in range(1,len(cost[cur])):
+            if cost[cur][i]>=0 and visited[i]!=1:
+                stack.append(i)
+                flag=0
+                break
+        if flag:
+                stack.pop()
+
 
 
 '''
@@ -198,7 +181,7 @@ def tri_traversal(cost, heuristic, start_point, goals):
 
     t1 = DFS_Traversal(cost, start_point, goals)
     #print(t1)
-    t2 = UCS_Traversal(cost, heuristic,start_point,goals)
+    t2 = UCS_Traversal(cost, heuristic,start_point,goals, 1)
     #print(t2)
     t3 = A_star_Traversal(cost,heuristic,start_point,goals)
     #print(t3)
