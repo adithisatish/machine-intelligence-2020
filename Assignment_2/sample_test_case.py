@@ -20,7 +20,7 @@ def test_case():
             [0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 7],
             [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0]]
     heuristic = [0, 5, 7, 3, 4, 6, 0, 0, 6, 5, 0]
-
+    print(tri_traversal(cost, heuristic,1,[7,9,10]))
     try:
         # start node is 1, goal states to reach are 6,7 & 10
         if (tri_traversal(cost,heuristic, 1, [6, 7, 10]))[0] == [1, 2, 3, 4, 7]:

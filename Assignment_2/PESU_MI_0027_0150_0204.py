@@ -47,7 +47,7 @@ def A_star_Traversal(cost, heuristic, start_point, goals):
 
     
 
-def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
+def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar = 0):
     
     #The ucs_astar parameter here determines whether the algorithm is UCS or A*
     #i.e whether to consider the heuristic or not.
@@ -152,7 +152,7 @@ def DFS_Traversal(cost,start_point, goals): #add your parameters
                 break
         if flag:
                 stack.pop()
-
+    return stack
 
 
 '''
