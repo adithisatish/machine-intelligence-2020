@@ -29,7 +29,7 @@ def getMinimumPath(priorityQueue,heuristic):
         if minPath[1] + heuristic[minPath[0]] > i[1] + heuristic[i[0]]: #The first comparison done with respect to costs
             minPath = i
         elif minPath[1] + heuristic[minPath[0]] == i[1] + heuristic[i[0]]:
-            if minPath[0] > i[0]: #The second comparison done to maintain lexicographical order
+            if minPath[0] >= i[0]: #The second comparison done to maintain lexicographical order
                 minPath = i
 
     return minPath
@@ -85,12 +85,12 @@ def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
             priorityQueue.remove(cur_path)
 
         for j in range(1, len(cost[i])):
-            if cost[i][j] <= 0: 
+            if cost[i][j] < 0: 
                 continue
             if visited[j] == 1: 
                 continue
             priorityQueue.append((j,(cur_path[1]+cost[i][j]),i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
-
+        
         while len(priorityQueue)!=0:
             #print(cur_path)
             cur_path = getMinimumPath(priorityQueue,heuristic) #Returns the minimum path node of all nodes in frontier
@@ -99,7 +99,7 @@ def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
                 priorityQueue.remove(cur_path) #Repeat until a minimum path node is found that is unvisited by removing all visited minimum path nodes
             else:
                 break
-
+       
         pathTrack[cur_path[0]] = cur_path[2] #Update the child:parent pair in order to keep track of path taken
 
         visited[cur_path[0]] = 1 #Add current path node to explored set
