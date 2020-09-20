@@ -184,7 +184,7 @@ def tri_traversal(cost, heuristic, start_point, goals):
 
     t1 = DFS_Traversal(cost, start_point, goals)
     #print(t1)
-    t2 = UCS_Traversal(cost, heuristic,start_point,goals, 1)
+    t2 = UCS_Traversal(cost, heuristic,start_point,goals, 0)
     #print(t2)
     t3 = A_star_Traversal(cost,heuristic,start_point,goals)
     #print(t3)
