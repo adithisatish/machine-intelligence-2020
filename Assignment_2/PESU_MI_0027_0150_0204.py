@@ -41,7 +41,7 @@ def A_star_Traversal(cost, heuristic, start_point, goals):
  
     if validHeuristic == 0:
         print("The heuristic is not valid")
-        return None
+        return []
  
     return UCS_Traversal(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
  
