@@ -131,7 +131,7 @@ def astartest():
 	print("Test 9: ", astar(cost1, heuristic1, 1, [9]))
 	print("Test 10: ", astar(cost1, heuristic1, 1, [10]))
 	print("Test 11: ", astar(cost1, heuristic1, 1, [6,7,10]))
-	print("Test 12: ", ucs(cost1, heuristic1, 1, [3,4,7,10]))
+	print("Test 12: ", astar(cost1, heuristic1, 1, [3,4,7,10]))
 	print("Test 13: ", astar(cost1, heuristic1, 1, [5,9,4]))
 	print("Test 14: ", astar(cost1, heuristic1, 1, [4,8,10]))
 	print("Test 15: ", astar(cost1, heuristic1, 1, [2,8,5]))
@@ -155,7 +155,7 @@ def astartest():
 	print("Test 31: ", astar(cost3, heuristic3, 1, [5]))
 	
 #DFS_Traversaltestcheck() #uncomment if you want to check what ur code prints
-#DFS_Traversaltest()	
+DFS_Traversaltest()	
 astartest()	
-#ucstest()
+ucstest()
 

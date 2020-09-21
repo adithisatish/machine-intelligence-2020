@@ -22,28 +22,32 @@ def checkValidity(heuristic,cost): #YET TO COMPLETE
     
     return 1
 
-def getMinimumPath(priorityQueue):
+def getMinimumPath(priorityQueue,heuristic):
     minPath = priorityQueue[0]
  
     for i in priorityQueue[1:]:
-        minPath = min(i, minPath) #Comparison initially done with first element, then second (cost) and finally the node
+        if minPath[1] + heuristic[minPath[0]] > i[1] + heuristic[i[0]]: #The first comparison done with respect to costs
+            minPath = i
+        elif minPath[1] + heuristic[minPath[0]] == i[1] + heuristic[i[0]]:
+            if minPath[0] >= i[0]: #The second comparison done to maintain lexicographical order
+                minPath = i
  
     return minPath
     
 #Main functions:
-
+ 
 def A_star_Traversal(cost, heuristic, start_point, goals):
     validHeuristic = checkValidity(heuristic,cost)
-
+ 
     if validHeuristic == 0:
         print("The heuristic is not valid")
         return None
-
+ 
     return UCS_Traversal(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
-
+ 
     
-
-def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar = 0):
+ 
+def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
     
     #The ucs_astar parameter here determines whether the algorithm is UCS or A*
     #i.e whether to consider the heuristic or not.
@@ -58,10 +62,8 @@ def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar = 0):
     visited = [0]*len(cost[0]) #The Explored Set: keeps track of all the nodes that have already been visited
     priorityQueue = [] #In UCS, the Frontier is a Priority Queue that is dependent on the minimum path cost
  
-    pathTrack = {start_point: 0} #To keep track of the child and corresponding parent nodes
+    pathTrack = {start_point:0} #To keep track of the child and corresponding parent nodes
     res = [] # The resulting list of nodes which represents the minimum cost path
- 
-    minCost = {start_point: 0} #to store cost of each destination
  
     exception = stateExceptions(len(visited)-1,start_point,goals)
  
@@ -69,57 +71,61 @@ def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar = 0):
         return []
     
     if exception == 1:
-       return [start_point]
+        return [start_point]
  
     visited[start_point] = 1
-    priorityQueue.append((0, 0, start_point))
+    priorityQueue.append((start_point,0,0))
  
     i = start_point
     #print(heuristic[start_point])
-    cur_path = (0, 0, start_point) #Updated everytime with the current heuristic of node, the cost upto that node, and node value
+    cur_path = (start_point,0,i) #Updated everytime with the current node chosen, the cost upto that node, and said node's parent
     
     while(len(priorityQueue) != 0):
         if cur_path in priorityQueue: #Remove the initial node (i.e start state) from the frontier
             priorityQueue.remove(cur_path)
  
         for j in range(1, len(cost[i])):
-            if cost[i][j] < 0 or visited[j] == 1: 
+            if cost[i][j] < 0: 
                 continue
-            if j not in minCost or minCost[i] + cost[i][j] < minCost[j]:
-                minCost[j] = minCost[i] + cost[i][j]
-                pathTrack[j] = i            
+            if visited[j] == 1: 
+                continue
+            priorityQueue.append((j,(cur_path[1]+cost[i][j]),i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
+        
+        #print("Priority Queue:",priorityQueue)
  
-            priorityQueue.append((minCost[j] + heuristic[j], minCost[j], j)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
-        
-        
+        #print("Visited:",visited)
  
         while len(priorityQueue)!=0:
             #print(cur_path)
-            cur_path = getMinimumPath(priorityQueue) #Returns the minimum path node of all nodes in frontier
+            cur_path = getMinimumPath(priorityQueue,heuristic) #Returns the minimum path node of all nodes in frontier
  
-            if visited[cur_path[2]] == 1:
+            if visited[cur_path[0]] == 1:
                 priorityQueue.remove(cur_path) #Repeat until a minimum path node is found that is unvisited by removing all visited minimum path nodes
             else:
                 break
+       
+        pathTrack[cur_path[0]] = cur_path[2] #Update the child:parent pair in order to keep track of path taken
  
-        visited[cur_path[2]] = 1 #Add current path node to explored set
-        i = cur_path[2]        
+        visited[cur_path[0]] = 1 #Add current path node to explored set
+        i = cur_path[0]
+        #priorityQueue.remove(cur_path) #Remove the current node from frontier
  
-    #To find out the goal state with least possible cost
+        #print("Current Path:",cur_path)
+        #print("Heuristic:",cur_path[1]+heuristic[cur_path[0]])
+        #print("Path Track:",pathTrack)
         
-    leastCost = 1e18
-    child = -1
-    for i in goals:
-        if i in minCost and minCost[i] < leastCost:
-            leastCost = minCost[i]
-            child = i
-    
-    if child == -1:
-        return []
+        #print(len(priorityQueue))
  
-    while child !=0:
-        res.append(child)
-        child = pathTrack[child]
+        if cur_path[0] in goals: #A minimum path goal state has been achieved
+            child = cur_path[0]
+            #print(cur_path[:2])
+            while child !=0: #Traverse backwards from goal to start state in order to find the path taken
+                res.append(child) 
+                child = pathTrack[child]
+            break
+    
+    if len(priorityQueue)==0 and cur_path[0] not in goals: #To handle the case where all the goal states are unreachable
+        return []
  
     res.reverse() #To get the correct traversal order i.e start state to goal
     return res
