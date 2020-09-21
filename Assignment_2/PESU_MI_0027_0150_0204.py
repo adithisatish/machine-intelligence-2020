@@ -55,13 +55,13 @@ def ucs(cost, heuristic, start_point, goals, ucs_astar = 0):
  
     minCost = {start_point: 0} #to store cost of each destination
  
-    # exception = stateExceptions(len(visited)-1,start_point,goals)
+    exception = stateExceptions(len(visited)-1,start_point,goals)
  
-    # if exception == -1:
-    #     return []
+    if exception == -1:
+        return []
     
-    # if exception == 1:
-    #     return [start_point]
+    if exception == 1:
+        return [start_point]
  
     visited[start_point] = 1
     priorityQueue.append((0, [start_point], 0))
@@ -102,22 +102,6 @@ def ucs(cost, heuristic, start_point, goals, ucs_astar = 0):
             nextPath.append(j)
  
             priorityQueue.append(( nextHeuristicCost, nextPath, nextCost )) #Calculating new cost of path for each of the unvisited children and inserting to frontier
-        
-        
- 
-        
- 
-        
-        #priorityQueue.remove(cur_path) #Remove the current node from frontier
- 
-        #print("Current Path:",cur_path)
-        #print("Heuristic:",cur_path[1]+heuristic[cur_path[0]])
-        #print("Path Track:",pathTrack)
-        
-        #print(len(priorityQueue))
- 
-        # if cur_path[0] in goals: #A minimum path goal state has been achieved
-        #     minCost[cur_path[0]] = cur_path[1]
         
     
     if len(priorityQueue)==0 and cur_path[0] not in goals: #To handle the case where all the goal states are unreachable

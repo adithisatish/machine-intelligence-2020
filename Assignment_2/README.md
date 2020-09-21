@@ -2,9 +2,10 @@
 ## Machine Intelligence - Assignment 2
 
 Functions Implemented:
-- ```depthFirstSearch``` : Depth-First Search
-- ```uniformCostSearch``` : Uniform Cost Search
-- ```astar``` : A* Search
+- ```DFS_Traversal``` : Depth-First Search
+- ```UCS_Traversal``` : Uniform Cost Search
+- ```A_star_Traversal``` : A* Search
+- ```tri_traversal``` : Implements all three search algorithms
 
 ### Run
 A sample test case has been provided in order to test the functions.
