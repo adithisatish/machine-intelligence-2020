@@ -93,7 +93,7 @@ def ucs(cost, heuristic, start_point, goals, ucs_astar = 0):
             return path        
  
         for j in range(1, len(cost[i])):
-            if cost[i][j] < 0 or visited[j] == 1: 
+            if cost[i][j] <= 0 or visited[j] == 1: 
                 continue
             
             nextCost = curCost + cost[i][j]
