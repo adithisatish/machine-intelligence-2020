@@ -22,20 +22,32 @@ def checkValidity(heuristic,cost):
     
     return 1
 
-def getMinimumPath(priorityQueue):
+def getMinimumPath(priorityQueue,heuristic):
     minPath = priorityQueue[0]
  
     for i in priorityQueue[1:]:
-        minPath = min(i, minPath)
+        if minPath[1] + heuristic[minPath[0]] > i[1] + heuristic[i[0]]: #The first comparison done with respect to costs
+            minPath = i
+        elif minPath[1] + heuristic[minPath[0]] == i[1] + heuristic[i[0]]:
+            if minPath[0] >= i[0]: #The second comparison done to maintain lexicographical order
+                minPath = i
  
     return minPath
     
 #Main functions:
  
+def A_star_Traversal(cost, heuristic, start_point, goals):
+    validHeuristic = checkValidity(heuristic,cost)
+ 
+    # if validHeuristic == 0:
+    #     print("The heuristic is not valid")
+    #     return []
+ 
+    return UCS_Traversal(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
  
     
  
-def ucs(cost, heuristic, start_point, goals, ucs_astar = 0):
+def UCS_Traversal(cost, heuristic, start_point, goals, ucs_astar):
     
     #The ucs_astar parameter here determines whether the algorithm is UCS or A*
     #i.e whether to consider the heuristic or not.
@@ -45,88 +57,66 @@ def ucs(cost, heuristic, start_point, goals, ucs_astar = 0):
     if ucs_astar == 0:
         heuristic = [0]*len(cost[0])
     
-    #print("Heuristic :",heuristic)
  
     visited = [0]*len(cost[0]) #The Explored Set: keeps track of all the nodes that have already been visited
     priorityQueue = [] #In UCS, the Frontier is a Priority Queue that is dependent on the minimum path cost
  
-    pathTrack = {start_point: 0} #To keep track of the child and corresponding parent nodes
+    pathTrack = {start_point:0} #To keep track of the child and corresponding parent nodes
     res = [] # The resulting list of nodes which represents the minimum cost path
  
-    minCost = {start_point: 0} #to store cost of each destination
+    exception = stateExceptions(len(visited),start_point,goals)
  
-    # exception = stateExceptions(len(visited)-1,start_point,goals)
- 
-    # if exception == -1:
-    #     return []
+    if exception == -1:
+        return []
     
-    # if exception == 1:
-    #     return [start_point]
+    if exception == 1:
+        return [start_point]
  
     visited[start_point] = 1
-    priorityQueue.append((0, [start_point], 0))
-     
-    #print(heuristic[start_point])
-    cur_path = (0, [start_point], 0) #Updated everytime with the current heuristic of node, the cost upto that node, and node value
+    priorityQueue.append((start_point,0,0))
+ 
+    i = start_point
+    
+    cur_path = (start_point,0,i) #Updated everytime with the current node chosen, the cost upto that node, and said node's parent
     
     while(len(priorityQueue) != 0):
-
-
-        while len(priorityQueue)!=0:
-            #print(cur_path)
-            cur_path = getMinimumPath(priorityQueue) #Returns the minimum path node of all nodes in frontier
+        if cur_path in priorityQueue: #Remove the initial node (i.e start state) from the frontier
             priorityQueue.remove(cur_path)
-            
-            if visited[cur_path[1][-1]]:
-                continue
-            break
-
-        heuristicPath = cur_path[0]
-        path = cur_path[1]
-        curCost = cur_path[2]
-        i = path[-1]
-
-        visited[i] = 1 #Add current path node to explored set        
-        
-
-        if i in goals:
-            return path        
  
         for j in range(1, len(cost[i])):
-            if cost[i][j] < 0 or visited[j] == 1: 
+            if cost[i][j] < 0: 
                 continue
+            if visited[j] == 1: 
+                continue
+            priorityQueue.append((j,(cur_path[1]+cost[i][j]),i)) #Calculating new cost of path for each of the unvisited children and inserting to frontier
+ 
+        while len(priorityQueue)!=0:
             
-            nextCost = curCost + cost[i][j]
-            nextHeuristicCost = nextCost + heuristic[j]
-            nextPath = list(path)
-            nextPath.append(j)
+            cur_path = getMinimumPath(priorityQueue,heuristic) #Returns the minimum path node of all nodes in frontier
  
-            priorityQueue.append(( nextHeuristicCost, nextPath, nextCost )) #Calculating new cost of path for each of the unvisited children and inserting to frontier
-        
-        
+            if visited[cur_path[0]] == 1:
+                priorityQueue.remove(cur_path) #Repeat until a minimum path node is found that is unvisited by removing all visited minimum path nodes
+            else:
+                break
+       
+        pathTrack[cur_path[0]] = cur_path[2] #Update the child:parent pair in order to keep track of path taken
  
+        visited[cur_path[0]] = 1 #Add current path node to explored set
+        i = cur_path[0]
         
- 
-        
-        #priorityQueue.remove(cur_path) #Remove the current node from frontier
- 
-        #print("Current Path:",cur_path)
-        #print("Heuristic:",cur_path[1]+heuristic[cur_path[0]])
-        #print("Path Track:",pathTrack)
-        
-        #print(len(priorityQueue))
- 
-        # if cur_path[0] in goals: #A minimum path goal state has been achieved
-        #     minCost[cur_path[0]] = cur_path[1]
-        
+        if cur_path[0] in goals: #A minimum path goal state has been achieved
+            child = cur_path[0]
+            
+            while child !=0: #Traverse backwards from goal to start state in order to find the path taken
+                res.append(child) 
+                child = pathTrack[child]
+            break
     
     if len(priorityQueue)==0 and cur_path[0] not in goals: #To handle the case where all the goal states are unreachable
         return []
  
     res.reverse() #To get the correct traversal order i.e start state to goal
     return res
-
-
 
 def DFS_Traversal(cost,start_point, goals): #add your parameters 
     visited=[0]*len(cost[0]) # To keep track of visited nodes.
@@ -161,18 +151,6 @@ def DFS_Traversal(cost,start_point, goals): #add your parameters
     return stack
 
 
-def A_star_Traversal(cost, heuristic, start_point, goals):
-    # validHeuristic = checkValidity(heuristic,cost)
- 
-    # if validHeuristic == 0:
-    #     print("The heuristic is not valid")
-    #     return None
- 
-    return ucs(cost = cost,start_point=start_point,goals=goals, heuristic=heuristic, ucs_astar=1)
- 
-def UCS_Traversal(cost, start_point, goals):
-    return ucs(cost = cost, start_point = start_point, goals = goals, heuristic = [], ucs_astar=0)
-
 '''
 Function tri_traversal - performs DFS, UCS and A* traversals and returns the path for each of these traversals 
 
@@ -200,9 +178,9 @@ NOTE : you are allowed to write other helper functions that you can call in the 
 def tri_traversal(cost, heuristic, start_point, goals):
     l = []
 
-    t1 = DFS_Traversal(cost, start_point,goals)
+    t1 = DFS_Traversal(cost, start_point, goals)
     #print(t1)
-    t2 = UCS_Traversal(cost,start_point,goals)
+    t2 = UCS_Traversal(cost, heuristic,start_point,goals, 0)
     #print(t2)
     t3 = A_star_Traversal(cost,heuristic,start_point,goals)
     #print(t3)
