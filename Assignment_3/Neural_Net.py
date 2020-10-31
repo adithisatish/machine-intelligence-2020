@@ -6,7 +6,58 @@ Mention hyperparameters used and describe functionality in detail in this space
 - carries 1 mark
 '''
 
+# Importing Required Libraries
+import os
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+from statistics import mode
+
+# Cleaning and Prepreocessing of the Dataset
+def boxplots(df,att):
+    plot = df.boxplot(column=att)
+    plot.set_title("Box Plot for "+att)
+    plt.show()
+
+def dataCleaning(df):
+    # print("Check for Missing Values:")
+    # print(df.count())
+    # for i in df:
+    #     boxplots(df,i)
+
+    # Median replacement done for the attributes with outliers
+    outlier_categories = ['Age','BP','HB']
+
+    for i in outlier_categories:
+        df[i] = df[i].fillna(np.nanmedian(df[i]))
+
+    # Mean replacement for other numeric attributes
+    df['Weight'] = df['Weight'].fillna(int(np.nanmean(df['Weight'])))
+
+    # Mode replacement done for all binary attributes
+    att = ['Delivery phase','Education','Residence']
+    for i in att:
+        df[i] = df[i].fillna(mode(df[i]))
+
+    # print("Check after dealing with missing values:")
+    # print(df.count())
+
+    return df
+
 class NN:
+
+	# Defining some common activation functions
+
+	def sigmoid(self,value):
+		return 1/(1 + np.exp(-value))
+
+	def ReLu(self, value):
+		return max(0, value)
+
+	def softmax(self, X):
+		return np.exp(X)/np.sum(np.exp(X))
+
+
 
 	''' X and Y are dataframes '''
 	
@@ -26,7 +77,7 @@ class NN:
 		
 		return yhat
 
-	def CM(y_test,y_test_obs):
+	def CM(self,y_test,y_test_obs):
 		'''
 		Prints confusion matrix 
 		y_test is list of y values in the test dataset
@@ -70,8 +121,10 @@ class NN:
 		print(f"Precision : {p}")
 		print(f"Recall : {r}")
 		print(f"F1 SCORE : {f1}")
-			
 
+path = "D:\\PESU\\Sem 5\\Machine Intelligence\\MI_Assignment\\Assignment_3\\"
+dataset = pd.read_csv(path + os.listdir(path)[-2])
+dataset = dataCleaning(dataset)
 
 	
 
