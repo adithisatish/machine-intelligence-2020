@@ -122,8 +122,9 @@ class NN:
 		print(f"Recall : {r}")
 		print(f"F1 SCORE : {f1}")
 
-path = "D:\\PESU\\Sem 5\\Machine Intelligence\\MI_Assignment\\Assignment_3\\"
-dataset = pd.read_csv(path + os.listdir(path)[-2])
+#path = "D:\\PESU\\Sem 5\\Machine Intelligence\\MI_Assignment\\Assignment_3\\"
+#dataset = pd.read_csv(path + os.listdir(path)[-2])
+dataset = pd.read_csv("LBW_Dataset.csv")
 dataset = dataCleaning(dataset)
 
 	
