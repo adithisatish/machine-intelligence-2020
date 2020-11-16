@@ -113,8 +113,6 @@ class NN:
 	def tanh_derivative(self, x):
 		return (1-(self.tanh(x))**2)
 
-
-
 	''' X and Y are dataframes '''
 	
 	def fit(self,X,Y,epochs): # Epochs is an added parameter here
@@ -242,8 +240,7 @@ class NN:
 		print(f"Recall : {r}")
 		print(f"F1 SCORE : {f1}")
 
-#path = "D:\\PESU\\Sem 5\\Machine Intelligence\\MI_Assignment\\Assignment_3\\"
-#dataset = pd.read_csv(path + os.listdir(path)[-2])
+
 dataset = pd.read_csv("LBW_Dataset.csv")
 dataset = data_cleaning(dataset)
 # dataset = feature_scaling(dataset)
