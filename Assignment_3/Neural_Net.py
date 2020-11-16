@@ -117,6 +117,7 @@ class NN:
 		'''
 		Function that trains the neural network by taking x_train and y_train samples as input
 		'''
+		print("Training the network......")
 		for epoch in range(epochs):
 			X_length = len(X)
 			error = 0
@@ -166,8 +167,10 @@ class NN:
 				self.input_hidden_weights += self.lr * grad_input_hidden_weights
 				self.output_bias += self.lr * grad_output_bias
 				self.input_bias += self.lr * grad_input_bias
+			
 			if(not epoch%100):
-				print(epoch, error/X_length)
+				# print("Training......")
+				print("Epoch:",epoch, error/X_length)
 	
 	def predict(self,X):
 
@@ -254,6 +257,7 @@ y_hat = [1 if i>0.6 else 0 for i in predictions]
 print("\n\n")
 train_pred = neural_net.predict(X_train)
 yh_train = [1 if i>0.6 else 0 for i in train_pred]
+
 print("Train Set Results:")
 neural_net.CM(y_train,yh_train)
 print("\n---------------\n")
