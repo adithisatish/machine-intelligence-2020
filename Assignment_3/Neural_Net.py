@@ -14,14 +14,16 @@ import matplotlib.pyplot as plt
 from statistics import mode
 from sklearn.model_selection import train_test_split
 
+pd.options.mode.chained_assignment = None # To ignore the SettingWithCopy warning
+
 # Cleaning and Prepreocessing of the Dataset
 def boxplots(df,att):
     plot = df.boxplot(column=att)
     plot.set_title("Box Plot for "+att)
     plt.show()
 
-def dataCleaning(df):
-    # print("Check for Missing Values:")
+def data_cleaning(df):
+	# print("Check for Missing Values:")
     # print(df.count())
     # for i in df:
     #     boxplots(df,i)
@@ -29,23 +31,30 @@ def dataCleaning(df):
 	# df = df.drop(columns=['Education', 'Residence'])
 
     # Median replacement done for the attributes with outliers
-    outlier_categories = ['Age','BP','HB']
+	outlier_categories = ['Age','BP','HB']	
+	for i in outlier_categories:
+		df[i] = df[i].fillna(int(np.nanmedian(df[i])))
 
-    for i in outlier_categories:
-        df[i] = df[i].fillna(np.nanmedian(df[i]))
+		# Clamping the outliers to their boxplot upper and lower bounds
+		q1,q3 = np.percentile(df[i],[25,75])
+		IQR = q3-q1
 
-    # Mean replacement for other numeric attributes
-    df['Weight'] = df['Weight'].fillna(int(np.nanmean(df['Weight'])))
+		min_clamp = q1-1.5*IQR
+		max_clamp = q3+1.5*IQR
 
-    # Mode replacement done for all binary attributes
-    att = ['Delivery phase','Education','Residence']
-    for i in att:
-        df[i] = df[i].fillna(mode(df[i]))
+		df[i].loc[df[i] > max_clamp] = max_clamp
+		df[i].loc[df[i] < min_clamp] = min_clamp
 
-    # print("Check after dealing with missing values:")
-    # print(df.count())
+	# Mean replacement for other numeric attributes
+	df['Weight'] = df['Weight'].fillna(int(np.nanmean(df['Weight'])))
 
-    return df
+	# Mode replacement done for all other attributes with missing values
+	att = ['Delivery phase', 'Education', 'Residence']
+
+	for i in att:
+		df[i] = df[i].fillna(mode(df[i]))
+
+	return df
 
 def standardization(df):
 	for i in df.keys():
@@ -229,7 +238,7 @@ class NN:
 #path = "D:\\PESU\\Sem 5\\Machine Intelligence\\MI_Assignment\\Assignment_3\\"
 #dataset = pd.read_csv(path + os.listdir(path)[-2])
 dataset = pd.read_csv("LBW_Dataset.csv")
-dataset = dataCleaning(dataset)
+dataset = data_cleaning(dataset)
 # dataset = feature_scaling(dataset)
 
 features = np.array(dataset.iloc[:,:-1],dtype=np.longdouble)
@@ -241,6 +250,14 @@ neural_net = NN()
 neural_net.fit(X_train, y_train, 200)
 predictions = neural_net.predict(X_test)
 y_hat = [1 if i>0.6 else 0 for i in predictions]
+
+print("\n\n")
+train_pred = neural_net.predict(X_train)
+yh_train = [1 if i>0.6 else 0 for i in train_pred]
+print("Train Set Results:")
+neural_net.CM(y_train,yh_train)
+print("\n---------------\n")
+print("Test Set Results:")
 neural_net.CM(y_test,y_hat)
 
 
