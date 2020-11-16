@@ -66,6 +66,12 @@ def standardization(df):
 
 	return df
 
+def normalization(df):
+	for i in df.keys():
+		df[i] = df[i].apply(lambda x: (x-np.mean(df[i])/np.std(df[i])))
+
+	return df
+
 def feature_scaling(df):
 	for i in df.keys():
 		min_val = min(df[i])
@@ -82,18 +88,18 @@ class NN:
 
 	# Initilizing the required variables
 
-	def __init__(self, num_features): # Given here since the fit function does now
+	def __init__(self, num_features, dims): # Given here since the fit function does now
 		# Seed the random number generator
 		np.random.seed(1)
-		self.lr = 0.01
+		self.lr = 0.05
 		# Set the weights -> 20 hidden layer neurons 
-		self.input_hidden_weights = np.random.randn(num_features, 15)*0.03 # To scale the weights
-		self.middle_weights = np.random.randn(15,15)*0.03
-		self.output_hidden_weights = np.random.randn(15,1)*0.03
+		self.input_hidden_weights = np.random.randn(num_features, dims[0])*0.03 # To scale the weights
+		self.middle_weights = np.random.randn(dims[0],dims[1])
+		self.output_hidden_weights = np.random.randn(dims[1],1)
 		# Setting the bias 
-		self.input_bias = np.random.randn(1, 15)*0.0005
-		self.middle_bias = np.random.randn(1,15)*0.0005
-		self.output_bias = np.random.randn(1, 1)*0.0005
+		self.input_bias = np.random.randn(1, dims[0])*0.001
+		self.middle_bias = np.random.randn(1,dims[1])*0.001
+		self.output_bias = np.random.randn(1, 1)*0.001
 
 	# Defining some common activation functions
 
@@ -101,7 +107,7 @@ class NN:
 		return 1/(1 + np.exp(-value))
 
 	def ReLu(self, value):
-		return max(0, value)
+		return np.maximum(0,value)
 
 	def softmax(self, X):
 		return np.exp(X)/np.sum(np.exp(X))
@@ -121,7 +127,7 @@ class NN:
 		'''
 		Function that trains the neural network by taking x_train and y_train samples as input
 		'''
-		print("Training the network......")
+		# print("Training the network......")
 		for epoch in range(epochs):
 			X_length = len(X)
 			error = 0
@@ -160,34 +166,26 @@ class NN:
 				# derivatives 
 				der_error = y-Yhat
 				# (der_error) * self.sigmoid_derivative(h2) is the activation error
-				act_error_1 = (der_error) * self.sigmoid_derivative(h2)
-				backprop_error = np.dot(act_error_1, self.output_hidden_weights.T)
-				act_error_2 = (backprop_error) * self.tanh_derivative(h1)
-				backprop_error2 = np.dot(act_error_2,self.middle_weights.T)
-				act_error_3 = (backprop_error2) * self.tanh_derivative(h)
-
-				# Differential of d(xi*wi + bi)/d(wi) = xi (input to any layer) (Here input to L2 is Ah)
-				grad_output_hidden_weights = np.dot(Ah1.T, act_error_1)
-				grad_middle_hidden_weights = np.dot(Ah.T,act_error_2)
-				# (Here input to L1 is x)
-				grad_input_hidden_weights = np.dot(x.T, act_error_3)
-				# Differential of d(xi*wi + bi)/d(bi) = 1
-				grad_output_bias = act_error_1
-				grad_middle_bias = act_error_2
-				grad_input_bias = act_error_3
-
-
-				# updation of the weights and biases
+				act_error_output = (der_error) * self.sigmoid_derivative(h2)
+				backprop_error = np.dot(act_error_output, self.output_hidden_weights.T)
+				grad_output_hidden_weights = np.dot(Ah1.T, act_error_output)
 				self.output_hidden_weights += self.lr * grad_output_hidden_weights
+				self.output_bias += self.lr * act_error_output
+
+				act_error_middle = (backprop_error)*self.tanh_derivative(h1)
+				backprop_error2 = np.dot(act_error_middle,self.middle_weights.T)
+				grad_middle_hidden_weights = np.dot(Ah.T,act_error_middle)
 				self.middle_weights += self.lr * grad_middle_hidden_weights
+				self.middle_bias += self.lr * act_error_middle
+
+				act_error_input = (backprop_error2)*self.tanh_derivative(h)
+				grad_input_hidden_weights = np.dot(x.T, act_error_input)
 				self.input_hidden_weights += self.lr * grad_input_hidden_weights
-				self.output_bias += self.lr * grad_output_bias
-				self.middle_bias += self.lr * grad_middle_bias
-				self.input_bias += self.lr * grad_input_bias
+				self.input_bias += self.lr * act_error_input
 			
-			if(not epoch%100):
-				# print("Training......")
-				print("Epoch:",epoch, error/X_length)
+			# if(not epoch%100):
+			# 	# print("Training......")
+			# 	print("Epoch:",epoch, error/X_length)
 	
 	def predict(self,X):
 
@@ -236,9 +234,9 @@ class NN:
 			if(y_test[i]==0 and y_test_obs[i]==0):
 				tn=tn+1
 			if(y_test[i]==1 and y_test_obs[i]==0):
-				fp=fp+1
-			if(y_test[i]==0 and y_test_obs[i]==1):
 				fn=fn+1
+			if(y_test[i]==0 and y_test_obs[i]==1):
+				fp=fp+1
 		cm[0][0]=tn
 		cm[0][1]=fp
 		cm[1][0]=fn
@@ -257,18 +255,36 @@ class NN:
 		print(f"Recall : {r}")
 		print(f"F1 SCORE : {f1}")
 
+		return a
+
 
 dataset = pd.read_csv("LBW_Dataset.csv")
 dataset = data_cleaning(dataset)
-# dataset = feature_scaling(dataset)
-# dataset = dataset.drop(columns=['Education'])
+dataset = feature_scaling(dataset)
+dataset = dataset.drop(columns=['Education'])
+# dataset = standardization(dataset)
 
 features = np.array(dataset.iloc[:,:-1],dtype=np.longdouble)
 labels = np.array(dataset.iloc[:,-1], dtype=np.longdouble)
 
 X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=0.20, random_state = 0)
 
-neural_net = NN(9)
+# target = dataset.iloc[:,-1]
+# print(target.value_counts())
+
+# test_acc = []
+
+# for i in range(1,21):
+# 	for j in range(1, 21):
+# 		neural_net = NN(9,[i,j])
+# 		neural_net.fit(X_train,y_train,200)
+# 		predictions = neural_net.predict(X_test)
+# 		y_hat = [1 if i>0.6 else 0 for i in predictions]
+# 		test_acc.append(neural_net.CM(y_test,y_hat))
+
+neurons = [15,15]
+
+neural_net = NN(8,neurons)
 neural_net.fit(X_train, y_train, 200)
 predictions = neural_net.predict(X_test)
 y_hat = [1 if i>0.6 else 0 for i in predictions]
