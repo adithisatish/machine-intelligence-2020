@@ -82,15 +82,17 @@ class NN:
 
 	# Initilizing the required variables
 
-	def __init__(self): # Given here since the fit function does now
+	def __init__(self, num_features): # Given here since the fit function does now
 		# Seed the random number generator
 		np.random.seed(1)
 		self.lr = 0.01
 		# Set the weights -> 20 hidden layer neurons 
-		self.input_hidden_weights = np.random.randn(9, 20)*0.03 # To scale the weights
-		self.output_hidden_weights = np.random.randn(20,1)*0.03
+		self.input_hidden_weights = np.random.randn(num_features, 15)*0.03 # To scale the weights
+		self.middle_weights = np.random.randn(15,15)*0.03
+		self.output_hidden_weights = np.random.randn(15,1)*0.03
 		# Setting the bias 
-		self.input_bias = np.random.randn(1, 20)*0.0005
+		self.input_bias = np.random.randn(1, 15)*0.0005
+		self.middle_bias = np.random.randn(1,15)*0.0005
 		self.output_bias = np.random.randn(1, 1)*0.0005
 
 	# Defining some common activation functions
@@ -134,10 +136,17 @@ class NN:
 				h = np.dot(x, self.input_hidden_weights) + self.input_bias
 				Ah = self.tanh(h)
 				
+				# Middle Layer 
+				# Ah : input 
+				# Ah2 : output 
+
+				h1 = np.dot(Ah, self.middle_weights) + self.middle_bias
+				Ah1 = self.tanh(h1)
+
 				# Layer 2:
 				# Ah : input
 				# Yhat : final output
-				h2 = np.dot(Ah, self.output_hidden_weights) + self.output_bias
+				h2 = np.dot(Ah1, self.output_hidden_weights) + self.output_bias
 				Yhat = self.sigmoid(h2)
 				
 				# Calculate the error rate (MSE DERIVATIVE)
@@ -152,22 +161,28 @@ class NN:
 				der_error = y-Yhat
 				# (der_error) * self.sigmoid_derivative(h2) is the activation error
 				act_error_1 = (der_error) * self.sigmoid_derivative(h2)
-				backprop_error = np.dot((der_error) * self.sigmoid_derivative(h2), self.output_hidden_weights.T)
-				act_error_2 = (backprop_error) * self.tanh_derivative(h)
+				backprop_error = np.dot(act_error_1, self.output_hidden_weights.T)
+				act_error_2 = (backprop_error) * self.tanh_derivative(h1)
+				backprop_error2 = np.dot(act_error_2,self.middle_weights.T)
+				act_error_3 = (backprop_error2) * self.tanh_derivative(h)
 
 				# Differential of d(xi*wi + bi)/d(wi) = xi (input to any layer) (Here input to L2 is Ah)
-				grad_output_hidden_weights = np.dot(Ah.T, act_error_1)
+				grad_output_hidden_weights = np.dot(Ah1.T, act_error_1)
+				grad_middle_hidden_weights = np.dot(Ah.T,act_error_2)
 				# (Here input to L1 is x)
-				grad_input_hidden_weights = np.dot(x.T, act_error_2)
+				grad_input_hidden_weights = np.dot(x.T, act_error_3)
 				# Differential of d(xi*wi + bi)/d(bi) = 1
 				grad_output_bias = act_error_1
-				grad_input_bias = act_error_2
+				grad_middle_bias = act_error_2
+				grad_input_bias = act_error_3
 
 
 				# updation of the weights and biases
 				self.output_hidden_weights += self.lr * grad_output_hidden_weights
+				self.middle_weights += self.lr * grad_middle_hidden_weights
 				self.input_hidden_weights += self.lr * grad_input_hidden_weights
 				self.output_bias += self.lr * grad_output_bias
+				self.middle_bias += self.lr * grad_middle_bias
 				self.input_bias += self.lr * grad_input_bias
 			
 			if(not epoch%100):
@@ -187,8 +202,10 @@ class NN:
         Pass inputs through the neural network to get output
         """
 		h = np.dot(X,self.input_hidden_weights) + self.input_bias
-		Ah = self.sigmoid(h)
-		h2 = np.dot(Ah,self.output_hidden_weights) + self.output_bias
+		Ah = self.tanh(h)
+		h1 = np.dot(Ah,self.middle_weights) + self.middle_bias
+		Ah1 = self.tanh(h1)
+		h2 = np.dot(Ah1,self.output_hidden_weights) + self.output_bias
 		yhat = self.sigmoid(h2)
 		
 		return yhat
@@ -244,13 +261,14 @@ class NN:
 dataset = pd.read_csv("LBW_Dataset.csv")
 dataset = data_cleaning(dataset)
 # dataset = feature_scaling(dataset)
+# dataset = dataset.drop(columns=['Education'])
 
 features = np.array(dataset.iloc[:,:-1],dtype=np.longdouble)
 labels = np.array(dataset.iloc[:,-1], dtype=np.longdouble)
 
 X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=0.20, random_state = 0)
 
-neural_net = NN()
+neural_net = NN(9)
 neural_net.fit(X_train, y_train, 200)
 predictions = neural_net.predict(X_test)
 y_hat = [1 if i>0.6 else 0 for i in predictions]
