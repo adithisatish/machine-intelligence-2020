@@ -45,6 +45,10 @@ def data_cleaning(df):
 		df[i].loc[df[i] > max_clamp] = max_clamp
 		df[i].loc[df[i] < min_clamp] = min_clamp
 
+		# Mean replacement of outliers : Giving worse metrics
+		# df[i].loc[df[i] > max_clamp] = np.mean(df[i]) 
+		# df[i].loc[df[i] < min_clamp] = np.mean(df[i])
+
 	# Mean replacement for other numeric attributes
 	df['Weight'] = df['Weight'].fillna(int(np.nanmean(df['Weight'])))
 
