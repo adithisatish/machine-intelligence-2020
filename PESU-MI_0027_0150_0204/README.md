@@ -32,6 +32,7 @@ Size of preprocessed dataset: 96 rows, 12 attributes
 The ANN consists of an input layer, two hidden layers and one output layer. 
 
 Input layer:
+
     Consists of one neuron per feature 
     No activation function 
 
@@ -59,7 +60,7 @@ Output layer:
     Output dimensions: (1, 1)
     
 #### Hyperparameters
-Lol
+Lolol
 
 ### Execution
 To run the neural network, run ```python src\Neural_Net.py```
