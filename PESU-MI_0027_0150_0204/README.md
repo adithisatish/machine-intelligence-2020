@@ -3,6 +3,16 @@
 
 A neural network is a series of algorithms that endeavors to recognize underlying relationships in a set of data through a process that mimics the way the human brain operates. The network implemented here is an Artificial Neural Network (ANN). 
 
+### Execution
+
+Navigate to the \src directory.
+
+To run the neural network, run ```python Neural_Net.py```
+
+To preprocess the dataset, run ```python Preprocess.py```
+
+### Problem Statement and Approach
+
 #### Dataset
 
 Low Birth weight (LBW) acts as an indicator of sickness in newborn babies. LBW is closely
@@ -63,14 +73,6 @@ Output layer:
     
 #### Hyperparameters
 Lolol
-
-### Execution
-
-Navigate to the \src directory.
-
-To run the neural network, run ```python Neural_Net.py```
-
-To preprocess the dataset, run ```python Preprocess.py```
 
 
 ### Authors:
