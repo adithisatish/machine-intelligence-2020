@@ -25,7 +25,7 @@ class NN:
 		self.lr = 0.05
 		# Set the weights -> 20 hidden layer neurons 
 		self.input_hidden_weights = np.random.randn(num_features, dims[0])*0.03 # To scale the weights
-		self.middle_weights = np.random.randn(dims[0], dims[1])
+		self.middle_hidden_weights = np.random.randn(dims[0], dims[1])
 		self.output_hidden_weights = np.random.randn(dims[1],1)
 		# Setting the bias 
 		self.input_bias = np.random.randn(1, dims[0])*0.001
@@ -84,7 +84,7 @@ class NN:
 				# Ah : input 
 				# Ah2 : output 
 
-				h1 = np.dot(Ah, self.middle_weights) + self.middle_bias
+				h1 = np.dot(Ah, self.middle_hidden_weights) + self.middle_bias
 				Ah1 = self.tanh(h1)
 
 				# Layer 2:
@@ -111,9 +111,9 @@ class NN:
 				self.output_bias += self.lr * act_error_output
 
 				act_error_middle = (backprop_error)*self.tanh_derivative(h1)
-				backprop_error2 = np.dot(act_error_middle,self.middle_weights.T)
+				backprop_error2 = np.dot(act_error_middle,self.middle_hidden_weights.T)
 				grad_middle_hidden_weights = np.dot(Ah.T,act_error_middle)
-				self.middle_weights += self.lr * grad_middle_hidden_weights
+				self.middle_hidden_weights += self.lr * grad_middle_hidden_weights
 				self.middle_bias += self.lr * act_error_middle
 
 				act_error_input = (backprop_error2)*self.tanh_derivative(h)
@@ -141,7 +141,7 @@ class NN:
         """
 		h = np.dot(X,self.input_hidden_weights) + self.input_bias
 		Ah = self.tanh(h)
-		h1 = np.dot(Ah,self.middle_weights) + self.middle_bias
+		h1 = np.dot(Ah,self.middle_hidden_weights) + self.middle_bias
 		Ah1 = self.tanh(h1)
 		h2 = np.dot(Ah1,self.output_hidden_weights) + self.output_bias
 		yhat = self.sigmoid(h2)
@@ -214,7 +214,7 @@ if __name__ == "__main__":
 
 	# Creating and training the neural network
 	begin = time.time()
-	neural_net = NN(12,neurons)
+	neural_net = NN(11,neurons)
 	neural_net.fit(X_train, y_train, 200)
 	end = time.time()
 

@@ -79,7 +79,7 @@ def preprocessing(dataset):
 	dphase = pd.get_dummies(dataset['Delivery phase'], prefix="dphase")
 	residence = pd.get_dummies(dataset.Residence, prefix='res')
 	
-	dataset = dataset.drop(columns=['Community','Education', 'Delivery phase'])
+	dataset = dataset.drop(columns=['Community','Education', 'Delivery phase','Residence'])
 	dataset = feature_scaling(dataset)
 	
 	dataset = dataset.join(comm)
