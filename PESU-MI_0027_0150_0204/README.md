@@ -39,7 +39,20 @@ Size of preprocessed dataset: 96 rows, 12 attributes (11 features and 1 target)
 
 #### Designing the Network
 
-Parameters and Hyperparameters:
+Class NN:
+- The __init__ method takes two parameters:
+  - num_features: The number of features the dataset has (this is required to set dimensions for the first hidden layer)
+  - dims: A list of size 2, representing the number of neurons in each of the two hidden layers respectively
+- NN.fit is the method used to compile and train the model using forward propagation to calculate the predicted value, find the error using MSE and then perform back propagation using stochastic gradient descent in order to get optimum weights. Once trained, the weights are at their optimum level and new data can be passed to the predict function. The fit method takes 3 parameters:
+  - X: The matrix of features
+  - Y: The target vector
+  - epochs: The number of epochs to use
+- NN.predict is the method used after training (fit) in order to predict the values for a new instance(s). It does a simple feed forward of the input vector linearly combined with the optimum weights and biases, resulting in a probability (as the output layer is a sigmoid function). The method takes one parameter:
+  - X: The test instance(s)
+
+Once the predicted probability is returned, it is compared against a set threshold of 0.6. Any result greater than the threshold is declared as 1 and any result lower than the threshold is assigned the value 0. 
+
+Hyperparameters:
 - learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima. !!!!!ADD PART ABOUT DECAY HERE!!!!
 - input layer : consists of a neuron for each feature, i.e 11 neurons
 - 1st hidden layer: 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
