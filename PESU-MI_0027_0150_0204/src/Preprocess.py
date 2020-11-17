@@ -63,6 +63,7 @@ def normalization(df):
 	return df
 
 def feature_scaling(df):
+	# Min-Max feature scaling done as new_x = new_min + ((x-old_min)/(old_max - old_min))*(new_max - new_min)
 	for i in df.keys():
 		min_val = min(df[i])
 		# max_val = max(df[i])
@@ -75,10 +76,12 @@ def feature_scaling(df):
 	return df
 
 def preprocessing(dataset):
+	# One-Hot Encoding done to derive the numerical forms of the categorical data 
 	comm = pd.get_dummies(dataset.Community, prefix = "comm")
 	# dphase = pd.get_dummies(dataset['Delivery phase'], prefix="dphase")
 	residence = pd.get_dummies(dataset.Residence, prefix='res')
 	
+	# Columns Education and Delivery phase have on variance and do not affect the model => dropped
 	dataset = dataset.drop(columns=['Community','Education', 'Delivery phase','Residence'])
 	dataset = feature_scaling(dataset)
 	
@@ -86,7 +89,7 @@ def preprocessing(dataset):
 	# dataset = dataset.join(dphase)
 	dataset = dataset.join(residence)
 
-	return dataset
+	return dataset # Final, preprocessed dataframe
 
 
 path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])

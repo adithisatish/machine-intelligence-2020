@@ -53,7 +53,10 @@ Class NN:
 Once the predicted probability is returned, it is compared against a set threshold of 0.6. Any result greater than the threshold is declared as 1 and any result lower than the threshold is assigned the value 0. 
 
 Hyperparameters:
-- learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima. !!!!!ADD PART ABOUT DECAY HERE!!!!
+- learning rate : using layer specific learning rates helped in finetuning the model to get better performance metrics
+  - learning rate for 1st hidden layer : 0.04
+  - learning rate for 2nd hidden layer : 0.05
+  - learning rate for output layer : 0.06
 - input layer : consists of a neuron for each feature, i.e 11 neurons
 - 1st hidden layer: 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
 - 2nd hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
