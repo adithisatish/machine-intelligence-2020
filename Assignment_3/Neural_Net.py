@@ -109,17 +109,17 @@ class NN:
 		self.lr = 0.05
 		# Set the weights -> 20 hidden layer neurons 
 		self.input_hidden_weights = np.random.randn(num_features, dims[0])*0.03 # To scale the weights
-		self.middle_weights = np.random.randn(dims[0],dims[1])
+		self.middle_weights = np.random.randn(dims[0], dims[1])
 		self.output_hidden_weights = np.random.randn(dims[1],1)
 		# Setting the bias 
 		self.input_bias = np.random.randn(1, dims[0])*0.001
-		self.middle_bias = np.random.randn(1,dims[1])*0.001
+		self.middle_bias = np.random.randn(1, dims[1])*0.001
 		self.output_bias = np.random.randn(1, 1)*0.001
 
 		print("Number of features:", num_features)
-		print("Number of neurons in layer 1:",dims[0])
-		print("Number of neurons in layer 2:",dims[1])
-		print("Number of output layer neurons: 1")
+		print("Number of neurons in layer 1:",dims[0], ", Activation function: tanh")
+		print("Number of neurons in layer 2:",dims[1], ", Activation function: tanh")
+		print("Number of output layer neurons: 1", ", Actiavation function: sigmoid")
 		print("\n")
 
 	# Defining some common activation functions

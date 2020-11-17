@@ -1,13 +1,13 @@
 Number of features: 12
-Number of neurons in layer 1: 20
-Number of neurons in layer 2: 15
-Number of output layer neurons: 1
+Number of neurons in layer 1: 20 , Activation function: tanh
+Number of neurons in layer 2: 15 , Activation function: tanh
+Number of output layer neurons: 1 , Actiavation function: sigmoid
 
 
 Training the network......
 Done training!
 Number of epochs: 200
-Time taken to train the network: 1.560922622680664 seconds
+Time taken to train the network: 1.5784504413604736 seconds
 
 
 Train-Test Split:80.0-20.0
