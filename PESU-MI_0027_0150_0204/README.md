@@ -7,9 +7,11 @@ A neural network is a series of algorithms that endeavors to recognize underlyin
 
 Navigate to the \src directory.
 
-To run the neural network, run ```python Neural_Net.py```
+To run the neural network, run ```python Neural_Net.py``` (python3 in Linux)
 
 To preprocess the dataset, run ```python Preprocess.py``` (This need not be done as the original as well as the preprocessed csvs are both already available in the data subdirectory)
+
+Note: The src subdirectory also contains sample_output.txt which is a text file containing the output obtained on execution of Neural_Net.py.
 
 ### Problem Statement and Approach
 

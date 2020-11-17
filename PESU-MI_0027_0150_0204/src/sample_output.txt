@@ -1,0 +1,37 @@
+Number of features: 11
+Number of neurons in layer 1: 20 , Activation function: tanh
+Number of neurons in layer 2: 15 , Activation function: tanh
+Number of output layer neurons: 1 , Actiavation function: sigmoid
+
+
+Training the network......
+Done training!
+Number of epochs: 200
+Time taken to train the network: 1.4900109767913818 seconds
+
+
+Train-Test Split:80.0-20.0
+
+---------------
+
+Train Set Results:
+Confusion Matrix : 
+[[18, 4], [4, 50]]
+
+
+Accuracy : 0.8947368421052632
+Precision : 0.9259259259259259
+Recall : 0.9259259259259259
+F1 SCORE : 0.9259259259259259
+
+---------------
+
+Test Set Results:
+Confusion Matrix : 
+[[1, 1], [2, 16]]
+
+
+Accuracy : 0.85
+Precision : 0.9411764705882353
+Recall : 0.8888888888888888
+F1 SCORE : 0.9142857142857143
