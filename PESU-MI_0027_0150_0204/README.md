@@ -39,7 +39,20 @@ Size of preprocessed dataset: 96 rows, 12 attributes (11 features and 1 target)
 
 #### Designing the Network
 
-The ANN consists of an input layer, two hidden layers and one output layer. 
+Parameters and Hyperparameters:
+- learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima.
+- input layer : 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+- output layer : 15 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+- hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
+- bias : the input layer, hidden layer and output layers have bias drawn randomly from a normal distribution and scaled down by 0.001
+- number of hidden layers : 2
+- activation function : tanh
+- output layer function : sigmoid
+- number of epochs = 200 : optimun value since a value lesser than 200 wasn't enough for the model to learn, whereas a value greater than 200 overfit.
+- error function : mean squared error (MSE)
+- train-test split : 80%-20%
+
+The ANN consists of an input layer, two hidden layers and one output layer. Detailed explanation -
 
 Input layer:
 
@@ -72,9 +85,6 @@ Output layer:
     Weight matrix dimensions: (15, 1)
     Bias vector dimensions: (1, 1)
     Output dimensions: (1, 1)
-    
-#### Hyperparameters
-Lolol
 
 
 ### Authors:
