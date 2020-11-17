@@ -66,9 +66,9 @@ Lolol
 
 Navigate to the \src directory.
 
-To run the neural network, run ```python3 Neural_Net.py```
+To run the neural network, run ```python Neural_Net.py```
 
-To preprocess the dataset, run ```python3 src\Preprocess.py```
+To preprocess the dataset, run ```python Preprocess.py```
 
 
 ### Authors:
