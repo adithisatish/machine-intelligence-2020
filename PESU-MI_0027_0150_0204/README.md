@@ -33,11 +33,12 @@ The ANN consists of an input layer, two hidden layers and one output layer.
 
 Input layer:
 
-    Consists of one neuron per feature 
-    No activation function 
+    Number of neurons = number of features = 11
+    Activation function = None
 
 First hidden layer: 
 
+    Fully connected
     Number of neurons = 20 
     Activation function = tanh
     Input vector dimensions: (1, 11)
@@ -46,6 +47,7 @@ First hidden layer:
 
 Second hidden layer:
 
+    Fully connected
     Number of neurons = 15
     Activation function = tanh
     Input vector dimensions: (1, 20)
