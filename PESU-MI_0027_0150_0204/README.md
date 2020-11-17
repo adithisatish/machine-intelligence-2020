@@ -40,11 +40,12 @@ Size of preprocessed dataset: 96 rows, 12 attributes (11 features and 1 target)
 #### Designing the Network
 
 Parameters and Hyperparameters:
-- learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima.
-- input layer : 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+- learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima. !!!!!ADD PART ABOUT DECAY HERE!!!!
+- input layer : consists of a neuron for each feature, i.e 11 neurons
+- 1st hidden layer: 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+- 2nd hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
 - output layer : 15 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
-- hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
-- bias : the input layer, hidden layer and output layers have bias drawn randomly from a normal distribution and scaled down by 0.001
+- bias : the input layer, hidden layers and output layers have bias drawn randomly from a normal distribution and scaled down by 0.001
 - number of hidden layers : 2
 - activation function : tanh
 - output layer function : sigmoid
@@ -85,6 +86,28 @@ Output layer:
     Weight matrix dimensions: (15, 1)
     Bias vector dimensions: (1, 1)
     Output dimensions: (1, 1)
+
+#### Performance Metrics
+
+A train-test split of 80-20% was chosen to fit this model. This is a very common split and has been proven to give optimum performance metrics for various models, and held up with the ANN as well. 
+
+Number of epochs: 200
+
+Training Performance Metrics:
+    
+    Accuracy: 89.47%
+    Precision: 92.59%
+    Recall: 92.59%
+    F1 Score: 0.9259
+
+Testing Performance Metrics:
+
+    Accuracy: 85%
+    Precision: 94.11%
+    Recall: 88.88%
+    F1 Score: 0.9142
+
+The time taken to train the model, on average was found to be = 1.58s
 
 
 ### Authors:
