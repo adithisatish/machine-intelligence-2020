@@ -3,6 +3,16 @@
 
 A neural network is a series of algorithms that endeavors to recognize underlying relationships in a set of data through a process that mimics the way the human brain operates. The network implemented here is an Artificial Neural Network (ANN). 
 
+### Execution
+
+Navigate to the \src directory.
+
+To run the neural network, run ```python Neural_Net.py```
+
+To preprocess the dataset, run ```python Preprocess.py```
+
+### Problem Statement and Approach
+
 #### Dataset
 
 Low Birth weight (LBW) acts as an indicator of sickness in newborn babies. LBW is closely
@@ -33,11 +43,12 @@ The ANN consists of an input layer, two hidden layers and one output layer.
 
 Input layer:
 
-    Consists of one neuron per feature 
-    No activation function 
+    Number of neurons = number of features = 11
+    Activation function = None
 
 First hidden layer: 
 
+    Fully connected
     Number of neurons = 20 
     Activation function = tanh
     Input vector dimensions: (1, 11)
@@ -46,29 +57,24 @@ First hidden layer:
 
 Second hidden layer:
 
+    Fully connected
     Number of neurons = 15
     Activation function = tanh
     Input vector dimensions: (1, 20)
     Weight matrix dimensions: (20, 15)
-    Bias vector dimensions: (1,15)
+    Bias vector dimensions: (1, 15)
 
 Output layer:
 
     Number of neurons = 1
     Activation function = sigmoid
     Input vector dimensions: (1, 15)
+    Weight matrix dimensions: (15, 1)
+    Bias vector dimensions: (1, 1)
     Output dimensions: (1, 1)
     
 #### Hyperparameters
 Lolol
-
-### Execution
-
-Navigate to the \src directory.
-
-To run the neural network, run ```python Neural_Net.py```
-
-To preprocess the dataset, run ```python Preprocess.py```
 
 
 ### Authors:
