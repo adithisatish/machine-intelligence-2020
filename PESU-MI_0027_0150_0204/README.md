@@ -36,6 +36,7 @@ Input layer:
     No activation function 
 
 First hidden layer: 
+
     Number of neurons = 20 
     Activation function = tanh
     Input vector dimensions: (1, 9)
@@ -43,6 +44,7 @@ First hidden layer:
     Bias vector dimensions: (1, 20)
 
 Second hidden layer:
+
     Number of neurons = 15
     Activation function = tanh
     Input vector dimensions: (1, 20)
@@ -50,6 +52,7 @@ Second hidden layer:
     Bias vector dimensions: (1,15)
 
 Output layer:
+
     Number of neurons = 1
     Activation function = sigmoid
     Input vector dimensions: (1, 15)
