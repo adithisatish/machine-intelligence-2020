@@ -1,7 +1,7 @@
 # Designing a Neural Network
 ## Machine Intelligence (UE18CS303) Assignment 3
 
-A neural network is a series of algorithms that endeavors to recognize underlying relationships in a set of data through a process that mimics the way the human brain operates. The network implemented here is an Artificial Neural Network (ANN). 
+A neural network is a series of algorithms that endeavors to recognize underlying relationships in a set of data through a process that mimics the way the human brain operates. The network implemented here is an Artificial Neural Network (ANN).
 
 ### Execution
 
@@ -18,20 +18,20 @@ To preprocess the dataset, run ```python Preprocess.py``` (This need not be done
 Low Birth weight (LBW) acts as an indicator of sickness in newborn babies. LBW is closely
 associated with infant mortality as well as various health outcomes later in life. Various studies
 show strong correlation between maternal health during pregnancy and the child’s birth weight.
-Health indicators of pregnant women such as age, height, weight, community etc are very helpful 
+Health indicators of pregnant women such as age, height, weight, community etc are very helpful
 for early detection of potential LBW cases. This detection is treated as a classification problem
-between LBW and not-LBW classes, i.e. it can be treated as a binary classification problem. 
+between LBW and not-LBW classes, i.e. it can be treated as a binary classification problem.
 
 Size of raw dataset: 96 rows, 9 attributes
 
-The attributes of the raw dataset include the community the mother belonged to, age, weight, delivery phase, haemoglobin content, 
+The attributes of the raw dataset include the community the mother belonged to, age, weight, delivery phase, haemoglobin content,
 folic acid intake (yes or no), blood pressure, educational qualification and her residence.
 
 #### Preprocessing
 
 The attribute "Education" had no variation in the dataset whatsoever and was hence dropped. The attribute "Delivery phase" also didn't show variation and was hence dropped as well.
 
-The attributes "Community" and "IFA" had no missing attributes. In order to clean the dataset, boxplots were plotted for all numeric attributes (age, weight, haemoglobin content, folic acid intake and BP). This showed that all numeric attributes except for Weight (i.e. HB, BP and Age)  had outliers. For these columns, the NaNs were replaced with the attribute median. For Weight, the NaNs were replaced with the mean value. For the categorical attributes, mode replacement was done in order to impute values for the NaNs. 
+The attributes "Community" and "IFA" had no missing attributes. In order to clean the dataset, boxplots were plotted for all numeric attributes (age, weight, haemoglobin content, folic acid intake and BP). This showed that all numeric attributes except for Weight (i.e. HB, BP and Age)  had outliers. For these columns, the NaNs were replaced with the attribute median. For Weight, the NaNs were replaced with the mean value. For the categorical attributes, mode replacement was done in order to impute values for the NaNs.
 
 The categorical variables, Community and Residence had to be encoded in order to obtain their numerical representations; done using one-hot encoding.
 
@@ -50,14 +50,15 @@ Class NN:
 - __NN.predict__ is the method used after training (fit) in order to predict the values for a new instance(s). It does a simple feed forward of the input vector linearly combined with the optimum weights and biases, resulting in a probability (as the output layer is a sigmoid function). The method takes one parameter:
   - X: The test instance(s)
 
-Once the predicted probability is returned, it is compared against a set threshold of 0.6. Any result greater than the threshold is declared as 1 and any result lower than the threshold is assigned the value 0. 
+Once the predicted probability is returned, it is compared against a set threshold of 0.6. Any result greater than the threshold is declared as 1 and any result lower than the threshold is assigned the value 0.
 
 Hyperparameters:
 - learning rate : using layer specific learning rates helped in finetuning the model to get better performance metrics
   - learning rate for 1st hidden layer : 0.04
   - learning rate for 2nd hidden layer : 0.05
   - learning rate for output layer : 0.06
-- input layer : consists of a neuron for each feature, i.e 11 neurons
+- learning rate decay : using a decay function on the learning rate for each of the layers helps to gradually change the learning rate as the epochs progress. This process aids convergence and provides optimal results.
+- input layer : consists of a neuron for each feature, i.e., 11 neurons
 - 1st hidden layer: 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
 - 2nd hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
 - output layer : 15 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
@@ -65,7 +66,7 @@ Hyperparameters:
 - number of hidden layers : 2
 - activation function : tanh
 - output layer function : sigmoid
-- number of epochs = 200 : optimun value since a value lesser than 200 wasn't enough for the model to learn, whereas a value greater than 200 overfit.
+- number of epochs = 200 : optimum value since a value lesser than 200 wasn't enough for the model to learn, whereas a value greater than 200 overfit.
 - error function : mean squared error (MSE)
 - train-test split : 80%-20%
 
@@ -76,10 +77,10 @@ Input layer:
     Number of neurons = number of features = 11
     Activation function = None
 
-First hidden layer: 
+First hidden layer:
 
     Fully connected
-    Number of neurons = 20 
+    Number of neurons = 20
     Activation function = tanh
     Input vector dimensions: (1, 11)
     Weight matrix dimensions: (11,20)
@@ -105,12 +106,12 @@ Output layer:
 
 #### Performance Metrics
 
-A train-test split of 80-20% was chosen to fit this model. This is a very common split and has been proven to give optimum performance metrics for various models, and held up with the ANN as well. 
+A train-test split of 80-20% was chosen to fit this model. This is a very common split and has been proven to give optimum performance metrics for various models, and held up with the ANN as well.
 
 Number of epochs: 200
 
 Training Performance Metrics:
-    
+
     Accuracy: 89.47%
     Precision: 92.59%
     Recall: 92.59%
@@ -123,7 +124,7 @@ Testing Performance Metrics:
     Recall: 88.88%
     F1 Score: 0.9142
 
-The time taken to train the model, on average was found to be approx 1.58s
+The time taken to train the model, on average was found to be approximately 1.58s
 
 
 ### Authors:
