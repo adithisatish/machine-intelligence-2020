@@ -25,7 +25,7 @@ The attributes "Community" and "IFA" had no missing attributes. In order to clea
 
 The categorical variables, Community and Residence had to be encoded in order to obtain their numerical representations; done using one-hot encoding.
 
-Size of preprocessed dataset: 96 rows, 12 attributes
+Size of preprocessed dataset: 96 rows, 12 attributes (11 features and 1 target)
 
 #### Designing the Network
 
@@ -40,8 +40,8 @@ First hidden layer:
 
     Number of neurons = 20 
     Activation function = tanh
-    Input vector dimensions: (1, 9)
-    Weight matrix dimensions: (9,20)
+    Input vector dimensions: (1, 11)
+    Weight matrix dimensions: (11,20)
     Bias vector dimensions: (1, 20)
 
 Second hidden layer:
