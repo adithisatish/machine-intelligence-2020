@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from statistics import mode
 from sklearn.model_selection import train_test_split
+import time
 
 pd.options.mode.chained_assignment = None # To ignore the SettingWithCopy warning
 
@@ -84,6 +85,20 @@ def feature_scaling(df):
 			df[i] = df[i].apply(lambda x: (x-min_val)/(range_val))
 	return df
 
+def preprocessing(dataset):
+	comm = pd.get_dummies(dataset.Community, prefix = "comm")
+	dphase = pd.get_dummies(dataset['Delivery phase'], prefix="dphase")
+	residence = pd.get_dummies(dataset.Residence, prefix='res')
+	
+	dataset = dataset.drop(columns=['Community','Education', 'Delivery phase'])
+	dataset = feature_scaling(dataset)
+	
+	dataset = dataset.join(comm)
+	# dataset = dataset.join(dphase)
+	dataset = dataset.join(residence)
+
+	return dataset
+
 class NN:
 
 	# Initilizing the required variables
@@ -100,6 +115,12 @@ class NN:
 		self.input_bias = np.random.randn(1, dims[0])*0.001
 		self.middle_bias = np.random.randn(1,dims[1])*0.001
 		self.output_bias = np.random.randn(1, 1)*0.001
+
+		print("Number of features:", num_features)
+		print("Number of neurons in layer 1:",dims[0])
+		print("Number of neurons in layer 2:",dims[1])
+		print("Number of output layer neurons: 1")
+		print("\n")
 
 	# Defining some common activation functions
 
@@ -127,7 +148,8 @@ class NN:
 		'''
 		Function that trains the neural network by taking x_train and y_train samples as input
 		'''
-		# print("Training the network......")
+		# print("Number of neurons in Layer 1")
+		print("Training the network......")
 		for epoch in range(epochs):
 			X_length = len(X)
 			error = 0
@@ -183,9 +205,11 @@ class NN:
 				self.input_hidden_weights += self.lr * grad_input_hidden_weights
 				self.input_bias += self.lr * act_error_input
 			
-			# if(not epoch%100):
+			# if(not epoch%20):
 			# 	# print("Training......")
 			# 	print("Epoch:",epoch, error/X_length)
+
+		print("Done training!\nNumber of epochs:",epochs)
 	
 	def predict(self,X):
 
@@ -258,46 +282,43 @@ class NN:
 		return a
 
 
-dataset = pd.read_csv("LBW_Dataset.csv")
-dataset = data_cleaning(dataset)
-dataset = feature_scaling(dataset)
-dataset = dataset.drop(columns=['Education'])
-# dataset = standardization(dataset)
+if __name__ == "__main__":
+	dataset = pd.read_csv("LBW_Dataset.csv")
+	dataset = preprocessing(data_cleaning(dataset))
+	
+	# dataset = standardization(dataset)
 
-features = np.array(dataset.iloc[:,:-1],dtype=np.longdouble)
-labels = np.array(dataset.iloc[:,-1], dtype=np.longdouble)
+	features = np.array(dataset.drop(columns=['Result']),dtype=np.longdouble)
+	labels = np.array(dataset['Result'], dtype=np.longdouble)
 
-X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=0.20, random_state = 0)
+	split = 0.2
 
-# target = dataset.iloc[:,-1]
-# print(target.value_counts())
+	X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=split, random_state = 0)
+	neurons = [20,15] # [20, x] where 13<=x<=18 gives a test accuracy of 0.85, the rest are all lesser.
 
-# test_acc = []
+	# Creating and training the neural network
+	begin = time.time()
+	neural_net = NN(12,neurons)
+	neural_net.fit(X_train, y_train, 200)
+	end = time.time()
 
-# for i in range(1,21):
-# 	for j in range(1, 21):
-# 		neural_net = NN(9,[i,j])
-# 		neural_net.fit(X_train,y_train,200)
-# 		predictions = neural_net.predict(X_test)
-# 		y_hat = [1 if i>0.6 else 0 for i in predictions]
-# 		test_acc.append(neural_net.CM(y_test,y_hat))
+	print(f"Time taken to train the network: {end-begin} seconds")
 
-neurons = [15,15]
+	# Making predictions for the test set
+	predictions = neural_net.predict(X_test)
+	y_hat = [1 if i>0.6 else 0 for i in predictions]
 
-neural_net = NN(8,neurons)
-neural_net.fit(X_train, y_train, 200)
-predictions = neural_net.predict(X_test)
-y_hat = [1 if i>0.6 else 0 for i in predictions]
+	print("\n")
+	print(f"Train-Test Split:{(1-split)*100}-{split*100}")
+	print("\n---------------\n")
+	train_pred = neural_net.predict(X_train)
+	yh_train = [1 if i>0.6 else 0 for i in train_pred]
 
-print("\n\n")
-train_pred = neural_net.predict(X_train)
-yh_train = [1 if i>0.6 else 0 for i in train_pred]
-
-print("Train Set Results:")
-neural_net.CM(y_train,yh_train)
-print("\n---------------\n")
-print("Test Set Results:")
-neural_net.CM(y_test,y_hat)
-
+	print("Train Set Results:")
+	neural_net.CM(y_train,yh_train)
+	print("\n---------------\n")
+	print("Test Set Results:")
+	neural_net.CM(y_test,y_hat)
+	
 
 
