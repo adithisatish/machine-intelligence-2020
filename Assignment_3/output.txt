@@ -1,4 +1,4 @@
-Number of features: 12
+Number of features: 11
 Number of neurons in layer 1: 20 , Activation function: tanh
 Number of neurons in layer 2: 15 , Activation function: tanh
 Number of output layer neurons: 1 , Actiavation function: sigmoid

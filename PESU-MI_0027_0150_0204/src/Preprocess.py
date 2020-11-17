@@ -76,7 +76,7 @@ def feature_scaling(df):
 
 def preprocessing(dataset):
 	comm = pd.get_dummies(dataset.Community, prefix = "comm")
-	dphase = pd.get_dummies(dataset['Delivery phase'], prefix="dphase")
+	# dphase = pd.get_dummies(dataset['Delivery phase'], prefix="dphase")
 	residence = pd.get_dummies(dataset.Residence, prefix='res')
 	
 	dataset = dataset.drop(columns=['Community','Education', 'Delivery phase','Residence'])

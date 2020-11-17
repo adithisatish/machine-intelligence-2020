@@ -3,7 +3,7 @@
 
 A neural network is a series of algorithms that endeavors to recognize underlying relationships in a set of data through a process that mimics the way the human brain operates. The network implemented here is an Artificial Neural Network (ANN). 
 
-### Dataset
+#### Dataset
 
 Low Birth weight (LBW) acts as an indicator of sickness in newborn babies. LBW is closely
 associated with infant mortality as well as various health outcomes later in life. Various studies
@@ -17,7 +17,7 @@ Size of raw dataset: 96 rows, 9 attributes
 The attributes of the raw dataset include the community the mother belonged to, age, weight, delivery phase, haemoglobin content, 
 folic acid intake (yes or no), blood pressure, educational qualification and her residence.
 
-### Cleaning
+#### Preprocessing
 
 The attribute "Education" had no variation in the dataset whatsoever and was hence dropped. The attribute "Delivery phase" also didn't show variation and was hence dropped as well.
 
@@ -25,7 +25,38 @@ The attributes "Community" and "IFA" had no missing attributes. In order to clea
 
 The categorical variables, Community and Residence had to be encoded in order to obtain their numerical representations; done using one-hot encoding.
 
-The ANN consists of an input layer, two hidden layers and one output layer, each
+Size of preprocessed dataset: 96 rows, 12 attributes
+
+#### Designing the Network
+
+The ANN consists of an input layer, two hidden layers and one output layer. 
+
+Input layer:
+    Consists of one neuron per feature 
+    No activation function 
+
+First hidden layer: 
+    Number of neurons = 20 
+    Activation function = tanh
+    Input vector dimensions: (1, 9)
+    Weight matrix dimensions: (9,20)
+    Bias vector dimensions: (1, 20)
+
+Second hidden layer:
+    Number of neurons = 15
+    Activation function = tanh
+    Input vector dimensions: (1, 20)
+    Weight matrix dimensions: (20, 15)
+    Bias vector dimensions: (1,15)
+
+Output layer:
+    Number of neurons = 1
+    Activation function = sigmoid
+    Input vector dimensions: (1, 15)
+    Output dimensions: (1, 1)
+    
+#### Hyperparameters
+Lol
 
 ### Execution
 To run the neural network, run ```python src\Neural_Net.py```

@@ -22,7 +22,11 @@ class NN:
 	def __init__(self, num_features, dims): # Given here since the fit function does now
 		# Seed the random number generator
 		np.random.seed(1)
-		self.lr = 0.05
+		# self.lr = 0.05
+		# Using specific learning rates helps the o/p layer learn faster than the i/p layers (which receive unfilteres and semi filtered data)
+		self.lr_input = 0.04
+		self.lr_middle = 0.05
+		self.lr_output = 0.06
 		# Set the weights -> 20 hidden layer neurons 
 		self.input_hidden_weights = np.random.randn(num_features, dims[0])*0.03 # To scale the weights
 		self.middle_hidden_weights = np.random.randn(dims[0], dims[1])
@@ -58,6 +62,10 @@ class NN:
 	def tanh_derivative(self, x):
 		return (1-(self.tanh(x))**2)
 
+	# Function to decay the learning rate of each of the different layers
+	def decay_lr(self, lr, decay, epoch):
+		return (lr * (1 / (1 + (decay * epoch))))
+
 	''' X and Y are dataframes '''
 	
 	def fit(self,X,Y,epochs): # Epochs is an added parameter here
@@ -67,7 +75,7 @@ class NN:
 		# print("Number of neurons in Layer 1")
 		print("Training the network......")
 		for epoch in range(epochs):
-			X_length = len(X)
+			# X_length = len(X)
 			error = 0
 			# Pass training set through the neural network row by row
 			for x, y in zip(X, Y):
@@ -83,7 +91,6 @@ class NN:
 				# Middle Layer 
 				# Ah : input 
 				# Ah2 : output 
-
 				h1 = np.dot(Ah, self.middle_hidden_weights) + self.middle_bias
 				Ah1 = self.tanh(h1)
 
@@ -107,19 +114,39 @@ class NN:
 				act_error_output = (der_error) * self.sigmoid_derivative(h2)
 				backprop_error = np.dot(act_error_output, self.output_hidden_weights.T)
 				grad_output_hidden_weights = np.dot(Ah1.T, act_error_output)
-				self.output_hidden_weights += self.lr * grad_output_hidden_weights
-				self.output_bias += self.lr * act_error_output
 
+				# decaying the learning rate of o/p layer, with decay = 0.01
+				decay_output=0.01
+				self.lr_output=self.decay_lr(self.lr_output,decay_output,epoch)
+
+				# Updatings output layer weights
+				self.output_hidden_weights += self.lr_output * grad_output_hidden_weights
+				self.output_bias += self.lr_output * act_error_output
+
+				#Backprop
 				act_error_middle = (backprop_error)*self.tanh_derivative(h1)
 				backprop_error2 = np.dot(act_error_middle,self.middle_hidden_weights.T)
 				grad_middle_hidden_weights = np.dot(Ah.T,act_error_middle)
-				self.middle_hidden_weights += self.lr * grad_middle_hidden_weights
-				self.middle_bias += self.lr * act_error_middle
 
+				# decaying the learning rate of middle layer, with decay = 0
+				decay_middle=0
+				self.lr_middle=self.decay_lr(self.lr_middle,decay_middle,epoch)
+
+				# Updatings middle layer weights
+				self.middle_hidden_weights += self.lr_middle * grad_middle_hidden_weights
+				self.middle_bias += self.lr_middle * act_error_middle
+				
+				# Backprop
 				act_error_input = (backprop_error2)*self.tanh_derivative(h)
 				grad_input_hidden_weights = np.dot(x.T, act_error_input)
-				self.input_hidden_weights += self.lr * grad_input_hidden_weights
-				self.input_bias += self.lr * act_error_input
+
+				# decaying the learning rate of middle layer, with decay = 0
+				decay_input=0
+				self.lr_input=self.decay_lr(self.lr_input,decay_input,epoch)
+
+				# Updatings imput layer weights
+				self.input_hidden_weights += self.lr_input * grad_input_hidden_weights
+				self.input_bias += self.lr_input * act_error_input
 			
 			# if(not epoch%20):
 			# 	# print("Training......")
@@ -196,7 +223,6 @@ class NN:
 		print(f"F1 SCORE : {f1}")
 
 		return a
-
 
 if __name__ == "__main__":
 	path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
