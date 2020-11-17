@@ -63,8 +63,9 @@ Output layer:
 Lolol
 
 ### Execution
-To run the neural network, run ```python src\Neural_Net.py```
-To preprocess the dataset, run ```python src\Preprocess.py```
+To run the neural network, run ```python3 src\Neural_Net.py```
+
+To preprocess the dataset, run ```python3 src\Preprocess.py```
 
 
 ### Authors:
