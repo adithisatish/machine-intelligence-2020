@@ -120,7 +120,7 @@ Testing Performance Metrics:
     Recall: 88.88%
     F1 Score: 0.9142
 
-The time taken to train the model, on average was found to be = 1.58s
+The time taken to train the model, on average was found to be approx 1.58s
 
 
 ### Authors:
