@@ -237,7 +237,7 @@ if __name__ == "__main__":
 
 	split = 0.2
 
-	X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=split, random_state = 0)
+	X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=split, random_state = 65)
 	neurons = [20,15] # [20, x] where 13<=x<=18 gives a test accuracy of 0.85, the rest are all lesser.
 
 	# Creating and training the neural network
