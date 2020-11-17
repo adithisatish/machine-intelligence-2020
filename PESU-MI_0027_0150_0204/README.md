@@ -31,7 +31,7 @@ folic acid intake (yes or no), blood pressure, educational qualification and her
 
 The attribute "Education" had no variation in the dataset whatsoever and was hence dropped. The attribute "Delivery phase" also didn't show variation and was hence dropped as well.
 
-The attributes "Community" and "IFA" had no missing attributes. In order to clean the dataset, boxplots were plotted for all numeric attributes (age, weight, haemoglobin content, folic acid intake and BP). This showed that all numeric attributes except for Weight (i.e. HB, BP and Age)  had outliers. For these columns, the NaNs were replaced with the attribute median. For Weight, the NaNs were replaced with the mean value. For the categorical attributes, mode replacement was done in order to impute values for the NaNs.
+The attributes "Community" and "IFA" had no missing attributes. In order to clean the dataset, boxplots were plotted for all numeric attributes (age, weight, haemoglobin content, folic acid intake and BP). This showed that all numeric attributes except for Weight (i.e. HB, BP and Age)  had outliers. For these columns, the NaNs were replaced with the attribute median. To get rid of the outliers, clamping was done where all outliers were either reassigned as the 25th or 75th percentile values of the columns, in order to negate any adverse effect they may have on the model. For Weight, the NaNs were replaced with the mean value. For the categorical attributes, mode replacement was done in order to impute values for the NaNs.
 
 The categorical variables, Community and Residence had to be encoded in order to obtain their numerical representations; done using one-hot encoding.
 
@@ -127,6 +127,7 @@ Testing Performance Metrics:
 The time taken to train the model, on average was found to be approximately 1.58s
 
 #### Key Features
+- Attribute specific preprocessing involving outlier clamping, one hot encoding and min-max feature scaling
 - Layer specific learning rates
 - Learning rate decays which are dynamic and can be tweaked by the user
 - Usage of tanh activation functions instead of the more common ReLu
