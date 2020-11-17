@@ -126,6 +126,12 @@ Testing Performance Metrics:
 
 The time taken to train the model, on average was found to be approximately 1.58s
 
+#### Key Features
+- Layer specific learning rates
+- Learning rate decays which are dynamic and can be tweaked by the user
+- Usage of tanh activation functions instead of the more common ReLu
+- Optimum metrics without compromising on performance (average training time < 2s) 
+
 
 ### Authors:
 - Adithi Satish
