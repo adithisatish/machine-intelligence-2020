@@ -9,7 +9,7 @@ Navigate to the \src directory.
 
 To run the neural network, run ```python Neural_Net.py```
 
-To preprocess the dataset, run ```python Preprocess.py``` (This need not be done as the original as well as the preprocessed csvs are both already available in the data subdirectory.
+To preprocess the dataset, run ```python Preprocess.py``` (This need not be done as the original as well as the preprocessed csvs are both already available in the data subdirectory)
 
 ### Problem Statement and Approach
 
