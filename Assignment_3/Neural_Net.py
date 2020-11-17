@@ -1,11 +1,27 @@
 '''
 Design of a Neural Network from scratch
-*************<IMP>*************
 Mention hyperparameters used and describe functionality in detail in this space
 - carries 1 mark
 '''
 
-# Importing Required Libraries
+'''
+Parameters and Hyperparameters:
+
+learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima.
+input layer : 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+output layer : 15 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
+bias : the input layer, hidden layer and output layers have bias drawn randomly from a normal distribution and scaled down by 0.001
+number of hidden layers : 2
+activation function for hidden layers : tanh
+output layer function : sigmoid
+number of epochs = 200 : optimun value since a value lesser than 200 wasn't enough for the model to learn, whereas a value greater than 200 overfit.
+error function : mean squared error (MSE)
+train-test split : 80%-20%
+
+'''
+
+# Importing the Required Libraries
 import os
 import pandas as pd 
 import numpy as np
@@ -14,103 +30,24 @@ from statistics import mode
 from sklearn.model_selection import train_test_split
 import time
 
-pd.options.mode.chained_assignment = None # To ignore the SettingWithCopy warning
-
-# Cleaning and Prepreocessing of the Dataset
-def boxplots(df,att):
-    plot = df.boxplot(column=att)
-    plot.set_title("Box Plot for "+att)
-    plt.show()
-
-def data_cleaning(df):
-	# print("Check for Missing Values:")
-    # print(df.count())
-    # for i in df:
-    #     boxplots(df,i)
-
-	# df = df.drop(columns=['Education', 'Residence'])
-
-    # Median replacement done for the attributes with outliers
-	outlier_categories = ['Age','BP','HB']	
-	for i in outlier_categories:
-		df[i] = df[i].fillna(int(np.nanmedian(df[i])))
-
-		# Clamping the outliers to their boxplot upper and lower bounds
-		q1,q3 = np.percentile(df[i],[25,75])
-		IQR = q3-q1
-
-		min_clamp = q1-1.5*IQR
-		max_clamp = q3+1.5*IQR
-
-		df[i].loc[df[i] > max_clamp] = max_clamp
-		df[i].loc[df[i] < min_clamp] = min_clamp
-
-		# Mean replacement of outliers : Giving worse metrics
-		# df[i].loc[df[i] > max_clamp] = np.mean(df[i]) 
-		# df[i].loc[df[i] < min_clamp] = np.mean(df[i])
-
-	# Mean replacement for other numeric attributes
-	df['Weight'] = df['Weight'].fillna(int(np.nanmean(df['Weight'])))
-
-	# Mode replacement done for all other attributes with missing values
-	att = ['Delivery phase', 'Education', 'Residence']
-
-	for i in att:
-		df[i] = df[i].fillna(mode(df[i]))
-
-	return df
-
-def standardization(df):
-	for i in df.keys():
-		df[i] = df[i].apply(lambda x: (x-np.mean(df[i])))
-
-	return df
-
-def normalization(df):
-	for i in df.keys():
-		df[i] = df[i].apply(lambda x: (x-np.mean(df[i])/np.std(df[i])))
-
-	return df
-
-def feature_scaling(df):
-	for i in df.keys():
-		min_val = min(df[i])
-		# max_val = max(df[i])
-		range_val = max(df[i]) - min_val
-
-		if range_val==0:
-			df[i] = df[i].apply(lambda x: x/min_val)
-		else:
-			df[i] = df[i].apply(lambda x: (x-min_val)/(range_val))
-	return df
-
-def preprocessing(dataset):
-	comm = pd.get_dummies(dataset.Community, prefix = "comm")
-	dphase = pd.get_dummies(dataset['Delivery phase'], prefix="dphase")
-	residence = pd.get_dummies(dataset.Residence, prefix='res')
-	
-	dataset = dataset.drop(columns=['Community','Education', 'Delivery phase'])
-	dataset = feature_scaling(dataset)
-	
-	dataset = dataset.join(comm)
-	# dataset = dataset.join(dphase)
-	dataset = dataset.join(residence)
-
-	return dataset
-
 class NN:
 
 	# Initilizing the required variables
-
-	def __init__(self, num_features, dims): # Given here since the fit function does now
+	def __init__(self, num_features, dims):
 		# Seed the random number generator
 		np.random.seed(1)
-		self.lr = 0.05
-		# Set the weights -> 20 hidden layer neurons 
-		self.input_hidden_weights = np.random.randn(num_features, dims[0])*0.03 # To scale the weights
-		self.middle_weights = np.random.randn(dims[0], dims[1])
+		# self.lr = 0.05 - Attempt 1 with single learning rate. Adaptive, independent learning rates resulted in a better model.
+		# We used layer specific adaptive learning rates to help the NN learn better.
+		# We use a lower learning rate for the i/p layer as the data is unfiltered, while a higher learning rate for the o/p layer as data is more filtered
+		self.lr_input = 0.04
+		self.lr_middle = 0.05
+		self.lr_output = 0.06
+		# Setting the weights for each of the layers (20 neuron layer, followed by 15 neuron layer has been implemented)
+		# Multiplying with 0.03 helps scale the input weights
+		self.input_hidden_weights = np.random.randn(num_features, dims[0])*0.03 
+		self.middle_hidden_weights = np.random.randn(dims[0], dims[1])
 		self.output_hidden_weights = np.random.randn(dims[1],1)
-		# Setting the bias 
+		# Setting the bias: The biases have been scaled down so as to start with a minimal value for the weights
 		self.input_bias = np.random.randn(1, dims[0])*0.001
 		self.middle_bias = np.random.randn(1, dims[1])*0.001
 		self.output_bias = np.random.randn(1, 1)*0.001
@@ -121,8 +58,8 @@ class NN:
 		print("Number of output layer neurons: 1", ", Actiavation function: sigmoid")
 		print("\n")
 
-	# Defining some common activation functions
-
+	# Defining some common activation functions and their derivatives
+	# tanh and sigmoid were used as it resulted in the best accuracy for the given dataset
 	def sigmoid(self,value):
 		return 1/(1 + np.exp(-value))
 
@@ -141,16 +78,19 @@ class NN:
 	def tanh_derivative(self, x):
 		return (1-(self.tanh(x))**2)
 
+	# An adaptive learning rate has been implemented by decaying the learning rate over the training process.
+	def decay_lr(self, lr, decay, epoch):
+		return (lr * (1 / (1 + (decay * epoch))))
+
 	''' X and Y are dataframes '''
 	
 	def fit(self,X,Y,epochs): # Epochs is an added parameter here
 		'''
 		Function that trains the neural network by taking x_train and y_train samples as input
 		'''
-		# print("Number of neurons in Layer 1")
+
 		print("Training the network......")
 		for epoch in range(epochs):
-			X_length = len(X)
 			error = 0
 			# Pass training set through the neural network row by row
 			for x, y in zip(X, Y):
@@ -166,8 +106,7 @@ class NN:
 				# Middle Layer 
 				# Ah : input 
 				# Ah2 : output 
-
-				h1 = np.dot(Ah, self.middle_weights) + self.middle_bias
+				h1 = np.dot(Ah, self.middle_hidden_weights) + self.middle_bias
 				Ah1 = self.tanh(h1)
 
 				# Layer 2:
@@ -177,36 +116,52 @@ class NN:
 				Yhat = self.sigmoid(h2)
 				
 				# Calculate the error rate (MSE DERIVATIVE)
-				# summ : wi*xi + bi
+				# h : wi*xi + bi
 				# error: d(loss)/d(output)
-				# activation error: d(loss)/d(o) * f'(summ)
-				# weights: d(loss)/d(w1): d(loss)/d(output) * d(out)/d(summ) * d(summ)/s(wi) : activation error * d(summ)/s(wi) : activation error * input
-				# bias: d(loss)/d(bias) : f'(x) * d(summ)/d(b) = f'(x)
-				# input: d(loss)/d(input) : d(loss)/d(summ) * d(summ)/d(in) = f'(x) * wi
+				# act_error: d(loss)/d(o) * f'(h)
+				# weights: d(loss)/d(w1): d(loss)/d(output) * d(out)/d(h) * d(h)/s(wi) 
+				# bias: d(loss)/d(bias) : f'(x) * d(h)/d(b) = f'(x)
+				# input: d(loss)/d(input) : d(loss)/d(h) * d(h)/d(in) = f'(x) * wi
+
 				error += np.mean(np.square(y-Yhat))
-				# derivatives 
 				der_error = y-Yhat
-				# (der_error) * self.sigmoid_derivative(h2) is the activation error
+				# Backpropagation for the output layer
 				act_error_output = (der_error) * self.sigmoid_derivative(h2)
 				backprop_error = np.dot(act_error_output, self.output_hidden_weights.T)
 				grad_output_hidden_weights = np.dot(Ah1.T, act_error_output)
-				self.output_hidden_weights += self.lr * grad_output_hidden_weights
-				self.output_bias += self.lr * act_error_output
 
+				# Decaying the learning rate of o/p layer (here decay = 0.01)
+				decay_output=0.01
+				self.lr_output=self.decay_lr(self.lr_output,decay_output,epoch)
+
+				# Updatings output layer weights
+				self.output_hidden_weights += self.lr_output * grad_output_hidden_weights
+				self.output_bias += self.lr_output * act_error_output
+
+				# Backpropagation for the middle layer
 				act_error_middle = (backprop_error)*self.tanh_derivative(h1)
-				backprop_error2 = np.dot(act_error_middle,self.middle_weights.T)
+				backprop_error2 = np.dot(act_error_middle,self.middle_hidden_weights.T)
 				grad_middle_hidden_weights = np.dot(Ah.T,act_error_middle)
-				self.middle_weights += self.lr * grad_middle_hidden_weights
-				self.middle_bias += self.lr * act_error_middle
 
+				# Decaying the learning rate of middle layer (here decay = 0.001)
+				decay_middle=0.001
+				self.lr_middle=self.decay_lr(self.lr_middle,decay_middle,epoch)
+
+				# Updatings middle layer weights
+				self.middle_hidden_weights += self.lr_middle * grad_middle_hidden_weights
+				self.middle_bias += self.lr_middle * act_error_middle
+				
+				# Backpropagation for the input layer
 				act_error_input = (backprop_error2)*self.tanh_derivative(h)
 				grad_input_hidden_weights = np.dot(x.T, act_error_input)
-				self.input_hidden_weights += self.lr * grad_input_hidden_weights
-				self.input_bias += self.lr * act_error_input
-			
-			# if(not epoch%20):
-			# 	# print("Training......")
-			# 	print("Epoch:",epoch, error/X_length)
+
+				# Decaying the learning rate of input layer (here decay = 0)
+				decay_input=0
+				self.lr_input=self.decay_lr(self.lr_input,decay_input,epoch)
+
+				# Updatings imput layer weights
+				self.input_hidden_weights += self.lr_input * grad_input_hidden_weights
+				self.input_bias += self.lr_input * act_error_input
 
 		print("Done training!\nNumber of epochs:",epochs)
 	
@@ -215,6 +170,7 @@ class NN:
 		"""
 		The predict function performs a simple feed forward of weights
 		and outputs yhat values 
+
 		yhat is a list of the predicted value for df X
 		"""
 
@@ -223,7 +179,7 @@ class NN:
         """
 		h = np.dot(X,self.input_hidden_weights) + self.input_bias
 		Ah = self.tanh(h)
-		h1 = np.dot(Ah,self.middle_weights) + self.middle_bias
+		h1 = np.dot(Ah,self.middle_hidden_weights) + self.middle_bias
 		Ah1 = self.tanh(h1)
 		h2 = np.dot(Ah1,self.output_hidden_weights) + self.output_bias
 		yhat = self.sigmoid(h2)
@@ -235,6 +191,7 @@ class NN:
 		Prints confusion matrix 
 		y_test is list of y values in the test dataset
 		y_test_obs is list of y values predicted by the model
+
 		'''
 
 		for i in range(len(y_test_obs)):
@@ -278,10 +235,11 @@ class NN:
 
 		return a
 
-
 if __name__ == "__main__":
-	dataset = pd.read_csv("LBW_Dataset.csv")
-	dataset = preprocessing(data_cleaning(dataset))
+	path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
+	# print(path)
+
+	dataset = pd.read_csv(path + "\\preprocessed_dataset.csv")
 	
 	# dataset = standardization(dataset)
 
@@ -290,12 +248,12 @@ if __name__ == "__main__":
 
 	split = 0.2
 
-	X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=split, random_state = 0)
+	X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=split, random_state = 65)
 	neurons = [20,15] # [20, x] where 13<=x<=18 gives a test accuracy of 0.85, the rest are all lesser.
 
 	# Creating and training the neural network
 	begin = time.time()
-	neural_net = NN(12,neurons)
+	neural_net = NN(11,neurons)
 	neural_net.fit(X_train, y_train, 200)
 	end = time.time()
 
@@ -317,4 +275,5 @@ if __name__ == "__main__":
 	print("Test Set Results:")
 	neural_net.CM(y_test,y_hat)
 	
+
 
