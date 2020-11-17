@@ -62,13 +62,15 @@ Second hidden layer:
     Activation function = tanh
     Input vector dimensions: (1, 20)
     Weight matrix dimensions: (20, 15)
-    Bias vector dimensions: (1,15)
+    Bias vector dimensions: (1, 15)
 
 Output layer:
 
     Number of neurons = 1
     Activation function = sigmoid
     Input vector dimensions: (1, 15)
+    Weight matrix dimensions: (15, 1)
+    Bias vector dimensions: (1, 1)
     Output dimensions: (1, 1)
     
 #### Hyperparameters
