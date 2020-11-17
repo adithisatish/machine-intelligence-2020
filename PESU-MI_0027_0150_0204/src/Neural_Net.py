@@ -8,9 +8,10 @@ Mention hyperparameters used and describe functionality in detail in this space
 Parameters and Hyperparameters:
 
 learning rate = 0.05 : a value larger than 0.05 led to divergence whereas a value lesser than 0.05 required several updates before reaching minima.
-input layer : 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+input layer : one neuron per feaature, i.e. 11 neurons 
+1st hidden layer: 20 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
+2nd hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
 output layer : 15 neurons with weights from randomly assigned from a normal distribution with mean=0, standard deviation=1
-hidden layer : a 20x15 matrix with weights drawn from a Gaussian normal distribution.
 bias : the input layer, hidden layer and output layers have bias drawn randomly from a normal distribution and scaled down by 0.001
 number of hidden layers : 2
 activation function for hidden layers : tanh
@@ -252,7 +253,7 @@ if __name__ == "__main__":
 	# an 80%-20% train-test split is performed with random_state = 65 for optimal performance
 	# Setting random_state as a fixed value guarantees the same sequence of random numbers is generated each time the code is run
 	X_train,X_test, y_train, y_test = train_test_split(features,labels, test_size=split, random_state = 65)
-	neurons = [20,15] # [20, x] where 13<=x<=18 gives a test accuracy of 0.85, the rest are all lesser.
+	neurons = [20,15] # [20, x] where 13<=x<=18 gave a test accuracy of 0.85.
 
 	# Creating the neural network
 	begin = time.time()
