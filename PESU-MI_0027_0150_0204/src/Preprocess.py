@@ -93,8 +93,10 @@ def preprocessing(dataset):
 
 
 path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
-# print(current_path)
-df = pd.read_csv(path + "\\LBW_Dataset.csv")
+# path = "/".join(os.getcwd().split("/")[:-1] + ['data'])
+
+df = pd.read_csv(path + "\\LBW_Dataset.csv") # change to / for Linux
 df = preprocessing(data_cleaning(df))
 
+# Back slash needs to be changed to forward slash if running on Linux
 df.to_csv(path + "\\preprocessed_dataset.csv", index=False)

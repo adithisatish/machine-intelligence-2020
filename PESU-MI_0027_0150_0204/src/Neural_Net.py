@@ -237,10 +237,11 @@ class NN:
 		return a
 
 if __name__ == "__main__":
-	path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
+	# path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
 	# print(path)
+	# path = ''
 
-	dataset = pd.read_csv(path + "\\preprocessed_dataset.csv")
+	dataset = pd.read_csv("preprocessed_dataset.csv")
 	
 	# dataset = standardization(dataset)
 
